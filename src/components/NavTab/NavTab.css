@@ -1,0 +1,30 @@
+.navtab {
+  width: 100%;
+  background-color: #272727;
+  padding: 25px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navtab__button {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  background: none;
+  border: none;
+  text-decoration-line: underline;
+  margin-right: 40px;
+  color: #fff;
+  padding: 0;
+}
+
+.navtab__button:last-child {
+  margin-right: 0;
+}
+
+@media screen and (max-width: 425px) {
+  .navtab__button {
+    margin-right: 24px;
+  }
+}
