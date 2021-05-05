@@ -3,7 +3,6 @@ import { Link, withRouter } from 'react-router-dom'
 
 class NotFound extends React.PureComponent {
   render() {
-    console.log(this.props)
     return (
       <div className='not-found'>
         <h2 className='not-found__title'>404</h2>

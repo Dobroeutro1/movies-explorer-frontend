@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch, withRouter } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Header from '../Header/Header'
 import Main from '../Main/Main'
 import Footer from '../Footer/Footer'
@@ -16,7 +16,7 @@ class App extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      loggedIn: true,
+      loggedIn: false,
     }
   }
 
@@ -51,4 +51,4 @@ class App extends React.PureComponent {
   }
 }
 
-export default withRouter(App)
+export default App

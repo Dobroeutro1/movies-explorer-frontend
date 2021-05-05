@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import BurgerPopup from '../BurgerPopup/BurgerPopup'
 
 class Header extends React.PureComponent {
@@ -16,7 +16,7 @@ class Header extends React.PureComponent {
 
   render() {
     return this.props.loggedIn ? (
-      <div className='header header_black'>
+      <div className={`header ${this.props.path ? 'header_black' : null}`}>
         <Link to='/' className='logo'></Link>
         <div className='header__buttons'>
           <Link to='/movies' className='header_button header_button_film'>
@@ -49,4 +49,4 @@ class Header extends React.PureComponent {
   }
 }
 
-export default Header
+export default withRouter(Header)
