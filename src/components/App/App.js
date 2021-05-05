@@ -26,23 +26,41 @@ class App extends React.PureComponent {
 
   render() {
     return (
-      <div className='app'>
+      <div className="app">
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <Header loggedIn={this.state.loggedIn} />
             <Main />
             <Footer />
           </Route>
-          <ProtectedRoute path='/movies' header={true} footer={true} loggedIn={this.state.loggedIn} component={Movies}></ProtectedRoute>
-          <ProtectedRoute path='/saved-movies' header={true} footer={true} loggedIn={this.state.loggedIn} component={SavedMovies}></ProtectedRoute>
-          <ProtectedRoute path='/profile' header={true} footer={false} loggedIn={this.state.loggedIn} component={Profile}></ProtectedRoute>
-          <Route path='/sign-up'>
+          <ProtectedRoute
+            path="/movies"
+            header={true}
+            footer={true}
+            loggedIn={this.state.loggedIn}
+            component={Movies}
+          ></ProtectedRoute>
+          <ProtectedRoute
+            path="/saved-movies"
+            header={true}
+            footer={true}
+            loggedIn={this.state.loggedIn}
+            component={SavedMovies}
+          ></ProtectedRoute>
+          <ProtectedRoute
+            path="/profile"
+            header={true}
+            footer={false}
+            loggedIn={this.state.loggedIn}
+            component={Profile}
+          ></ProtectedRoute>
+          <Route path="/sign-up">
             <Register handleSubmitRegister={this.handleSubmitRegister} />
           </Route>
-          <Route path='/sign-in'>
+          <Route path="/sign-in">
             <Login handleSubmitLogin={this.handleSubmitLogin} />
           </Route>
-          <Route path='*'>
+          <Route path="*">
             <NotFound />
           </Route>
         </Switch>
