@@ -1,0 +1,63 @@
+@import url(./vendor/normalize.css);
+@import url(./vendor/fonts/fonts.css);
+@import url(./components/Preloader/Preloader.css);
+@import url(./components/App/App.css);
+@import url(./components/Header/Header.css);
+@import url(./components//Promo/Promo.css);
+@import url(./components/NavTab/NavTab.css);
+@import url(./components/AboutProject/AboutProject.css);
+@import url(./components/Tech/Tech.css);
+@import url(./components/AboutMe/AboutMe.css);
+@import url(./components/Footer/Footer.css);
+@import url(./components/Profile/Profile.css);
+@import url(./components/Register/Register.css);
+@import url(./components/MoviesCard/MoviesCard.css);
+@import url(./components/Movies/Movies.css);
+@import url(./components/SearchForm/SearchForm.css);
+@import url(./components/FilterCheckbox/FilterCheckbox.css);
+@import url(./components/MoviesCardList/MoviesCardList.css);
+@import url(./components/BurgerPopup/BurgerPopup.css);
+@import url(./components/NotFound/NorFound.css);
+
+.project {
+  padding: 110px 70px;
+}
+
+.project_header {
+  border-bottom: 1px solid #dadada;
+  margin-bottom: 70px;
+}
+
+.project_title {
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 27px;
+  letter-spacing: -0.04em;
+  color: #ffffff;
+  margin: 0;
+  margin-bottom: 23px;
+}
+
+@media screen and (max-width: 768px) {
+  .project {
+    padding: 90px 50px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .project {
+    padding: 70px 18px;
+  }
+
+  .project_header {
+    margin-bottom: 60px;
+  }
+
+  .project_title {
+    margin-bottom: 28px;
+  }
+}
+
+.closed {
+  display: none;
+}

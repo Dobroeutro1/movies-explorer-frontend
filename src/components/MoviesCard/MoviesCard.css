@@ -1,0 +1,76 @@
+.card {
+  max-width: 360px;
+  background-color: #222222;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.card__header {
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card__title {
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.card__duration {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  text-align: right;
+  color: #8b8b8b;
+  margin: 0;
+}
+
+.card__img {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.card__btn {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 11px;
+  text-align: center;
+  color: #ffffff;
+  border-radius: 30px;
+  border: none;
+  background-color: #313131;
+  padding: 9px 15px;
+  width: 100px;
+  height: 29px;
+  margin: 0 auto 18px;
+}
+
+.card__btn_checked {
+  background-color: #ee3465;
+  background-image: url('../../images/checked_img.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.card__btn_deleted {
+  background-image: url('../../images/del_card_icon.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@media screen and (max-width: 890px) {
+  .card {
+    min-width: 342px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .card {
+    min-width: 300px;
+  }
+}
