@@ -1,12 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import logo from '../../images/logo.svg'
 
 class Register extends React.PureComponent {
   render() {
     return (
       <div className='register'>
         <div className='register__header'>
-          <div className='logo register__logo'></div>
+          <Link to='/'>
+            <img className='register__logo' alt='logo' src={logo}></img>
+          </Link>
           <h1 className='register__header_title'>Добро пожаловать!</h1>
         </div>
         <form className='register__form'>
@@ -14,7 +17,7 @@ class Register extends React.PureComponent {
             <label className='register__label' htmlFor='name'>
               Имя
             </label>
-            <input type='text' value='Виталий' className='register__input' id='name'></input>
+            <input required type='text' className='register__input' id='name'></input>
             <span className='register__span'>Что-то пошло не так...</span>
           </div>
 
@@ -22,7 +25,7 @@ class Register extends React.PureComponent {
             <label className='register__label' htmlFor='email'>
               E-mail
             </label>
-            <input type='email' value='Виталий' className='register__input' id='email'></input>
+            <input required type='email' className='register__input' id='email'></input>
             <span className='register__span'>Что-то пошло не так...</span>
           </div>
 
@@ -30,7 +33,7 @@ class Register extends React.PureComponent {
             <label className='register__label' htmlFor='password'>
               Пароль
             </label>
-            <input type='password' value='Виталий' className='register__input' id='password'></input>
+            <input required type='password' className='register__input' id='password'></input>
             <span className='register__span'>Что-то пошло не так...</span>
           </div>
         </form>

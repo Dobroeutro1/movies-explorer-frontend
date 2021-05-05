@@ -10,7 +10,9 @@ class MoviesCard extends React.PureComponent {
           <p className='card__duration'>27 минут</p>
         </div>
         <img src={testImg} alt='a' className='card__img'></img>
-        <button className='card__btn'>Сохранить</button>
+        {this.props.path === '/saved-movies' ? <button className='card__btn card__btn_deleted'></button> : null}
+        {this.props.added && this.props.path === '/movies' ? <button className='card__btn card__btn_checked'></button> : null}
+        {!this.props.added && this.props.path === '/movies' ? <button className='card__btn'>Сохранить</button> : null}
       </div>
     )
   }

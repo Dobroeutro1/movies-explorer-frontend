@@ -1,9 +1,24 @@
 import React from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import { Route, Redirect, withRouter } from 'react-router-dom'
+import Header from '../Header/Header'
+import Footer from '../Footer/Footer'
 
 const ProtectedRoute = ({ component: Component, ...props }) => {
-  console.log(props.loggedIn)
-  return <Route>{() => (props.loggedIn ? <Redirect to='/movies' /> : <Component {...props} />)}</Route>
+  return (
+    <Route>
+      {() =>
+        props.loggedIn ? (
+          <>
+            {props.header ? <Header loggedIn={props.loggedIn} /> : null}
+            <Component {...props} />
+            {props.footer ? <Footer /> : null}
+          </>
+        ) : (
+          <Redirect to='/' />
+        )
+      }
+    </Route>
+  )
 }
 
-export default ProtectedRoute
+export default withRouter(ProtectedRoute)

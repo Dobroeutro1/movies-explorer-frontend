@@ -6,8 +6,8 @@ class SavedMovies extends React.PureComponent {
   render() {
     return (
       <div className='movies'>
-        <SearchForm />
-        <MoviesCardList />
+        <SearchForm loading={true} />
+        <MoviesCardList path={this.props.path} />
       </div>
     )
   }

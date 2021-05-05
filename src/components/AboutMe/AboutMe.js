@@ -1,5 +1,4 @@
 import React from 'react'
-import photo from '../../images/photo.svg'
 
 class AboutMe extends React.PureComponent {
   render() {

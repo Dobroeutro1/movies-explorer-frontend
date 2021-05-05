@@ -57,6 +57,12 @@
   background-position: center;
 }
 
+.card__btn_deleted {
+  background-image: url('../../images/del_card_icon.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 @media screen and (max-width: 890px) {
   .card {
     min-width: 342px;

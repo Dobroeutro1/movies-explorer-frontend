@@ -7,7 +7,7 @@ class Movies extends React.PureComponent {
     return (
       <div className='movies'>
         <SearchForm />
-        <MoviesCardList />
+        <MoviesCardList path={this.props.path} />
       </div>
     )
   }

@@ -15,7 +15,6 @@ class Header extends React.PureComponent {
   }
 
   render() {
-    console.log(this.state.open)
     return this.props.loggedIn ? (
       <div className='header header_black'>
         <Link to='/' className='logo'></Link>
@@ -38,10 +37,10 @@ class Header extends React.PureComponent {
       <div className='header'>
         <Link to='/' className='logo'></Link>
         <div className='header__buttons'>
-          <Link to='/signup' className='header_button header_button_reg'>
+          <Link to='/sign-up' className='header_button header_button_reg'>
             Регистрация
           </Link>
-          <Link to='/signin' className='header_button header_button_log'>
+          <Link to='/sign-in' className='header_button header_button_log'>
             Войти
           </Link>
         </div>

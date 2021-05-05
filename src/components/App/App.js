@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import Header from '../Header/Header'
 import Main from '../Main/Main'
 import Footer from '../Footer/Footer'
@@ -9,13 +9,14 @@ import Profile from '../Profile/Profile'
 import Register from '../Register/Register'
 import Login from '../Login/Login'
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute'
-// import NotFound from '../NotFound/NotFound'
+
+import NotFound from '../NotFound/NotFound'
 
 class App extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      loggedIn: false,
+      loggedIn: true,
     }
   }
 
@@ -26,31 +27,28 @@ class App extends React.PureComponent {
   render() {
     return (
       <div className='app'>
-        {/* <NotFound /> */}
-        <Header loggedIn={this.state.loggedIn} />
         <Switch>
-          <ProtectedRoute exact path='/' loggedIn={this.state.loggedIn} component={Main}></ProtectedRoute>
-          <Route path='/movies'>
-            <Movies />
+          <Route exact path='/'>
+            <Header loggedIn={this.state.loggedIn} />
+            <Main />
+            <Footer />
           </Route>
-          <Route path='/saved-movies'>
-            <SavedMovies />
-          </Route>
-          <Route path='/profile'>
-            <Profile />
-          </Route>
-          <Route path='/signup'>
+          <ProtectedRoute path='/movies' header={true} footer={true} loggedIn={this.state.loggedIn} component={Movies}></ProtectedRoute>
+          <ProtectedRoute path='/saved-movies' header={true} footer={true} loggedIn={this.state.loggedIn} component={SavedMovies}></ProtectedRoute>
+          <ProtectedRoute path='/profile' header={true} footer={false} loggedIn={this.state.loggedIn} component={Profile}></ProtectedRoute>
+          <Route path='/sign-up'>
             <Register handleSubmitRegister={this.handleSubmitRegister} />
           </Route>
-          <Route path='/signin'>
+          <Route path='/sign-in'>
             <Login handleSubmitLogin={this.handleSubmitLogin} />
           </Route>
-          <Route>{this.state.loggedIn ? <Redirect to='/' /> : <Redirect to='/signin' />}</Route>
+          <Route path='*'>
+            <NotFound />
+          </Route>
         </Switch>
-        {this.state.loggedIn ? <Footer /> : <Footer />}
       </div>
     )
   }
 }
 
-export default App
+export default withRouter(App)
