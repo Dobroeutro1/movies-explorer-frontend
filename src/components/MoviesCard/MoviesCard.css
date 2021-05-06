@@ -19,6 +19,7 @@
   line-height: 18px;
   color: #ffffff;
   margin: 0;
+  text-decoration: none;
 }
 
 .card__duration {
@@ -31,7 +32,8 @@
 }
 
 .card__img {
-  width: 100%;
+  width: 360px;
+  height: 200px;
   margin-bottom: 18px;
 }
 
@@ -67,10 +69,22 @@
   .card {
     min-width: 342px;
   }
+
+  .card__img {
+    width: 342px;
+    height: 190px;
+  }
 }
 
 @media screen and (max-width: 750px) {
   .card {
     min-width: 300px;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .card__img {
+    width: 300px;
+    height: 168px;
   }
 }
