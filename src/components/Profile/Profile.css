@@ -17,7 +17,8 @@
 
 .profile__info {
   width: 100%;
-  margin-bottom: 220px;
+  display: flex;
+  flex-direction: column;
 }
 
 .profile__info_element {
@@ -28,9 +29,9 @@
 
 }
 
-.profile__info_element:last-child {
+.profile__info_element:last-of-type {
   border: none;
-  margin-bottom: 0;
+  margin-bottom: 220px;
 }
 
 .profile__info_text {
@@ -42,7 +43,16 @@
   color: #FFFFFF;
 }
 
+.profile__info_input {
+  width: 90%;
+  background: none;
+  outline: none;
+  border: none;
+  text-align: right;
+}
+
 .profile__btn {
+  margin: 0 auto;
   margin-bottom: 16px;
   background: none;
   border: none;

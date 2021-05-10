@@ -7,11 +7,14 @@ class Movies extends React.PureComponent {
   static contextType = CurrentMoviesContext
 
   render() {
-    console.log('MOVIES', this.props)
-    console.log('MOVIES context', this.context)
+    console.log('MOVIES PROPS', this.props)
+    // console.log('MOVIES context', this.context)
     return (
-      <div className='movies'>
-        <SearchForm />
+      <div className="movies">
+        <SearchForm
+          loading={this.props.loading}
+          searchMovie={this.props.searchMovie}
+        />
         <MoviesCardList movies={this.context} path={this.props.path} />
       </div>
     )

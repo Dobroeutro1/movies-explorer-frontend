@@ -61,3 +61,19 @@
 .closed {
   display: none;
 }
+
+.opened {
+  display: flex;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.error {
+  margin: 0 auto;
+  margin-bottom: 5px;
+  color: red;
+  font-size: 14px;
+  line-height: 16px;
+}

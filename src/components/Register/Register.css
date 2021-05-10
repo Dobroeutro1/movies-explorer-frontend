@@ -34,7 +34,7 @@
   margin-bottom: 24px;
 }
 
-.register__form_element:last-child {
+.register__form_element:last-of-type {
   margin-bottom: 134px;
 }
 
@@ -64,10 +64,11 @@
 }
 
 .register__span {
-  display: none;
+  display: none;  
 }
 
 .register__btn {
+  outline: none;
   font-weight: 500;
   font-size: 14px;
   line-height: 17px;
