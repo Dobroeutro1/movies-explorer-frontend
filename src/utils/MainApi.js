@@ -1,26 +1,8 @@
+import { checkResponse } from '../utils/utils'
+
 class Api {
   constructor({ url }) {
     this.url = url
-  }
-
-  _checkResponse(res) {
-    if (res.ok) {
-      return res.json()
-    }
-    console.log('CHECK RESPONSE', res)
-    if (res.status === 409) {
-      return Promise.reject('Такой email уже зарегистрирован')
-    }
-
-    if (res.status === 401) {
-      return Promise.reject('Проверьте правильность введенных данных')
-    }
-
-    if (res.status === 400) {
-      return Promise.reject('ХуйПиздаДжигурда')
-    }
-
-    return Promise.reject('Ошибка сервера')
   }
 
   // Регистрация
@@ -30,7 +12,7 @@ class Api {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, name }),
     })
-      .then(this._checkResponse)
+      .then(checkResponse)
       .catch(next)
   }
 
@@ -41,7 +23,7 @@ class Api {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     })
-      .then(this._checkResponse)
+      .then(checkResponse)
       .then((res) => {
         if (res.token) {
           localStorage.setItem('token', res.token)
@@ -52,24 +34,28 @@ class Api {
   }
 
   // Проверка токена
-  checkToken = (token) => {
+  checkToken = (token, next) => {
     return fetch(`${this.url}/users/me`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-    }).then(this._checkResponse)
+    })
+      .then(checkResponse)
+      .catch(next)
   }
 
   // Данные пользователя
-  getProfile = () => {
+  getProfile = (next) => {
     return fetch(`${this.url}/users/me`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    }).then(this._checkResponse)
+    })
+      .then(checkResponse)
+      .catch(next)
   }
 
   // Изменение данных пользователя
-  editProfile = (email, name) => {
+  editProfile = (email, name, next) => {
     return fetch(`${this.url}/users/me`, {
       method: 'PATCH',
       headers: {
@@ -80,15 +66,19 @@ class Api {
         email: email,
         name: name,
       }),
-    }).then(this._checkResponse)
+    })
+      .then(checkResponse)
+      .catch(next)
   }
 
   // Сохраненные фильмы
-  getSavedMovies = () => {
+  getSavedMovies = (next) => {
     return fetch(`${this.url}/movies`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    }).then(this._checkResponse)
+    })
+      .then(checkResponse)
+      .catch(next)
   }
 
   // Добавить фильм
@@ -103,7 +93,8 @@ class Api {
     nameRU,
     nameEN,
     thumbnail,
-    owner
+    owner,
+    next
   ) => {
     return fetch(`${this.url}/movies`, {
       method: 'POST',
@@ -121,18 +112,22 @@ class Api {
         owner,
         thumbnail,
       }),
-    }).then(this._checkResponse)
+    })
+      .then(checkResponse)
+      .catch(next)
   }
 
   // Удалить фильм
-  deleteMovie = (id) => {
+  deleteMovie = (id, next) => {
     return fetch(`${this.url}/movies`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       body: JSON.stringify({
         _id: id,
       }),
-    }).then(this._checkResponse)
+    })
+      .then(checkResponse)
+      .catch(next)
   }
 }
 

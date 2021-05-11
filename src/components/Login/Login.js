@@ -88,10 +88,10 @@ class Login extends React.PureComponent {
 
           <span
             className={`error ${
-              this.props.errorMessage === '' ? '' : 'opened'
+              this.props.errorMessage.type === 'login' ? '' : 'opened'
             }`}
           >
-            {this.props.errorMessage}
+            {this.props.errorMessage.value}
           </span>
           <button
             onClick={this.handleSubmit}

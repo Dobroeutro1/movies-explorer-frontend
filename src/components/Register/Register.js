@@ -115,10 +115,10 @@ class Register extends React.PureComponent {
 
           <span
             className={`error ${
-              this.props.errorMessage === '' ? '' : 'opened'
+              this.props.errorMessage.type === 'register' ? '' : 'opened'
             }`}
           >
-            {this.props.errorMessage}
+            {this.props.errorMessage.value}
           </span>
           <button
             className={`register__btn ${this.state.ready ? '' : 'disabled'}`}

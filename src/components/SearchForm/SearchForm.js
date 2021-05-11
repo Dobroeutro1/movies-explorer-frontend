@@ -16,6 +16,7 @@ class SearchForm extends React.PureComponent {
   }
 
   onChange = (e) => {
+    this.props.clearError()
     this.setState({ value: e.target.value })
   }
 
@@ -27,13 +28,26 @@ class SearchForm extends React.PureComponent {
 
   render() {
     return (
-      <div className='search'>
-        <form className='search__form'>
-          <input onChange={this.onChange} required value={this.state.value} className='search__input' placeholder='Фильм'></input>
+      <div className="search">
+        <form className="search__form">
+          <input
+            onChange={this.onChange}
+            required
+            value={this.state.value}
+            className="search__input"
+            placeholder="Фильм"
+          ></input>
           {this.props.loading ? (
             <Preloader />
           ) : (
-            <button disabled={this.state.value === ''} onClick={this.onSubmit} type='submit' className={`search__btn ${this.state.value === '' ? 'disabled' : ''}`}></button>
+            <button
+              disabled={this.state.value === ''}
+              onClick={this.onSubmit}
+              type="submit"
+              className={`search__btn ${
+                this.state.value === '' ? 'disabled' : ''
+              }`}
+            ></button>
           )}
         </form>
         <FilterCheckbox handleShortMovie={this.handleShortMovie} />
