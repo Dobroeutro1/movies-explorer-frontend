@@ -7,7 +7,12 @@ class SearchForm extends React.PureComponent {
     super(props)
     this.state = {
       value: '',
+      shortMovie: false,
     }
+  }
+
+  handleShortMovie = () => {
+    this.setState({ shortMovie: !this.state.shortMovie })
   }
 
   onChange = (e) => {
@@ -15,32 +20,23 @@ class SearchForm extends React.PureComponent {
   }
 
   onSubmit = (e) => {
-    // e.preventDefault()
-    console.log('AAAAAAAAAA')
-    // this.props.searchmovie(this.state.value)
+    e.preventDefault()
+    this.props.getMovie(this.state.value, this.state.shortMovie)
+    this.setState({ value: '' })
   }
 
   render() {
     return (
-      <div className="search">
-        <form className="search__form">
-          <input
-            onChange={this.onChange}
-            required
-            className="search__input"
-            placeholder="Фильм"
-          ></input>
+      <div className='search'>
+        <form className='search__form'>
+          <input onChange={this.onChange} required value={this.state.value} className='search__input' placeholder='Фильм'></input>
           {this.props.loading ? (
             <Preloader />
           ) : (
-            <button
-              onSubmit={this.onSubmit}
-              type="button"
-              className="search__btn"
-            ></button>
+            <button disabled={this.state.value === ''} onClick={this.onSubmit} type='submit' className={`search__btn ${this.state.value === '' ? 'disabled' : ''}`}></button>
           )}
         </form>
-        <FilterCheckbox />
+        <FilterCheckbox handleShortMovie={this.handleShortMovie} />
       </div>
     )
   }

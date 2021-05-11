@@ -31,6 +31,7 @@ class App extends React.PureComponent {
   }
 
   componentDidMount = () => {
+    console.log('MOUNT!!!')
     const token = localStorage.getItem('token')
     if (token) {
       mainApi.checkToken(token).then((res) => {
@@ -43,7 +44,6 @@ class App extends React.PureComponent {
 
       this.setState({ errorMessage: '' })
       this.getProfile()
-      this.getMovies()
     }
   }
 
@@ -101,11 +101,20 @@ class App extends React.PureComponent {
     })
   }
 
-  getMovies = () => {
+  getMovies = (value, short) => {
+    console.log('value', value)
+    console.log('short', short)
     this.setState({ loading: true })
     moviesApi.getMovies().then((res) => {
       console.log('MOVIES RES', res)
-      this.setState({ movies: res, loading: false })
+      const filterMovies = res.filter((movie) => {
+        return movie.nameRU.includes(value)
+      })
+      console.log(filterMovies)
+      if (filterMovies.length < 1) {
+        this.setState({ errorMessage: 'Ничего не найдено :)' })
+      }
+      this.setState({ movies: filterMovies, loading: false })
     })
   }
 
@@ -119,33 +128,27 @@ class App extends React.PureComponent {
     console.log('APP STATE', this.state)
     // console.log('APP PROPS', this.props)
     return (
-      <div className="app">
+      <div className='app'>
         <CurrentUserContext.Provider value={this.state.user}>
           <CurrentMoviesContext.Provider value={this.state.movies}>
             <Switch>
-              <Route exact path="/">
+              <Route exact path='/'>
                 <Header loggedIn={this.state.loggedIn} />
                 <Main />
                 <Footer />
               </Route>
 
               <ProtectedRoute
-                path="/movies"
+                path='/movies'
+                getMovie={this.getMovies}
                 header={true}
                 footer={true}
                 loggedIn={this.state.loggedIn}
                 loading={this.state.loading}
-                component={Movies}
-              ></ProtectedRoute>
+                component={Movies}></ProtectedRoute>
+              <ProtectedRoute path='/saved-movies' header={true} footer={true} loggedIn={this.state.loggedIn} component={SavedMovies}></ProtectedRoute>
               <ProtectedRoute
-                path="/saved-movies"
-                header={true}
-                footer={true}
-                loggedIn={this.state.loggedIn}
-                component={SavedMovies}
-              ></ProtectedRoute>
-              <ProtectedRoute
-                path="/profile"
+                path='/profile'
                 header={true}
                 footer={false}
                 loggedIn={this.state.loggedIn}
@@ -153,23 +156,16 @@ class App extends React.PureComponent {
                 getProfile={this.getProfile}
                 ready={this.state.readyEditProfile}
                 editProfile={this.editProfile}
-                component={Profile}
-              ></ProtectedRoute>
+                component={Profile}></ProtectedRoute>
 
-              <Route path="/sign-up">
-                <Register
-                  errorMessage={this.state.errorMessage}
-                  onRegister={this.onRegister}
-                />
+              <Route path='/sign-up'>
+                <Register errorMessage={this.state.errorMessage} onRegister={this.onRegister} />
               </Route>
-              <Route path="/sign-in">
-                <Login
-                  errorMessage={this.state.errorMessage}
-                  onLogin={this.onLogin}
-                />
+              <Route path='/sign-in'>
+                <Login errorMessage={this.state.errorMessage} onLogin={this.onLogin} />
               </Route>
 
-              <Route path="*">
+              <Route path='*'>
                 <NotFound />
               </Route>
             </Switch>

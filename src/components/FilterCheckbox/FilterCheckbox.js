@@ -6,7 +6,7 @@ class FilterCheckbox extends React.PureComponent {
       <div className='filter-checkbox'>
         <p className='filter-checkbox__text'>Короткометражки</p>
         <input className='filter-checkbox__input' id='checkbox' type='checkbox' />
-        <label className='filter-checkbox__label' htmlFor='checkbox'></label>
+        <label onClick={this.props.handleShortMovie} className='filter-checkbox__label' htmlFor='checkbox'></label>
       </div>
     )
   }
