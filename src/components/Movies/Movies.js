@@ -8,17 +8,16 @@ class Movies extends React.PureComponent {
 
   render() {
     console.log('MOVIES PROPS', this.props)
+    console.log('MOVIES CONTEXT', this.context)
     return (
-      <div className="movies">
-        <SearchForm
-          clearError={this.props.clearError}
-          loading={this.props.loading}
-          getMovie={this.props.getMovie}
-        />
+      <div className='movies'>
+        <SearchForm clearError={this.props.clearError} loading={this.props.loading} getMovie={this.props.getMovie} />
         <MoviesCardList
           deleteMovie={this.props.deleteMovie}
           addMovie={this.props.addMovie}
           errorMessage={this.props.errorMessage}
+          loopWithSlice={this.props.loopWithSlice}
+          handleShowMoreMovies={this.props.handleShowMoreMovies}
           movies={this.context}
           path={this.props.path}
         />

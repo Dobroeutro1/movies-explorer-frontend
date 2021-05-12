@@ -26,14 +26,21 @@ class App extends React.PureComponent {
       },
       loggedIn: false,
       loading: false,
-      movies: [],
+      movies: {
+        defaultMovies: [],
+        moviesPerPage: 12,
+        moviesPerAdding: 3,
+        moviesToShow: [],
+        next: 12,
+      },
       SavedMovies: [],
       errorMessage: { value: '', type: '' },
     }
   }
 
   componentDidMount = () => {
-    console.log('MOUNT!!!')
+    console.log('MOUNT!!!', window.screen)
+
     const token = localStorage.getItem('token')
     if (token) {
       mainApi
@@ -41,15 +48,24 @@ class App extends React.PureComponent {
         .then((res) => {
           console.log('CHECK TOKEN RES', res)
           if (res) {
-            this.setState({ loggedIn: true, email: res.email, name: res.name })
+            this.setState({ loggedIn: true, user: { email: res.email, name: res.name } })
             this.props.history.push('/movies')
           }
         })
-        .catch((err) =>
-          this.setState({ errorMessage: { value: err, type: 'token' } })
-        )
+        .catch((err) => this.setState({ errorMessage: { value: err, type: 'token' } }))
 
       this.getProfile()
+      if (window.screen.width < 1279 && window.screen.width > 752) {
+        this.setState((prev) => {
+          return { movies: { ...prev.movies, moviesPerPage: 8, next: 8, moviesPerAdding: 2 } }
+        })
+      }
+
+      if (window.screen.width < 752) {
+        this.setState((prev) => {
+          return { movies: { ...prev.movies, moviesPerPage: 5, next: 5, moviesPerAdding: 2 } }
+        })
+      }
     }
     this.setState({ errorMessage: { value: '', type: '' } })
   }
@@ -60,12 +76,10 @@ class App extends React.PureComponent {
       .register(email, password, name)
       .then((res) => {
         console.log('REGISTER RES', res)
-        this.setState({ email: email, name: name })
+        this.setState({ user: { email: email, name: name } })
         this.props.history.push('/sign-in')
       })
-      .catch((err) =>
-        this.setState({ errorMessage: { value: err, type: 'register' } })
-      )
+      .catch((err) => this.setState({ errorMessage: { value: err, type: 'register' } }))
   }
 
   // Логин
@@ -81,9 +95,7 @@ class App extends React.PureComponent {
           this.getProfile()
         }
       })
-      .catch((err) =>
-        this.setState({ errorMessage: { value: err, type: 'login' } })
-      )
+      .catch((err) => this.setState({ errorMessage: { value: err, type: 'login' } }))
   }
 
   // Логаут
@@ -101,9 +113,7 @@ class App extends React.PureComponent {
         console.log('PROFILE RES', res)
         this.setState({ user: { email: res.email, name: res.name } })
       })
-      .catch((err) =>
-        this.setState({ errorMessage: { value: err, type: 'getProfile' } })
-      )
+      .catch((err) => this.setState({ errorMessage: { value: err, type: 'getProfile' } }))
   }
 
   // Изменить данные профиля
@@ -114,9 +124,7 @@ class App extends React.PureComponent {
         console.log('EDIT PROFILE RES', res)
         this.setState({ user: { email: res.email, name: res.name } })
       })
-      .catch((err) =>
-        this.setState({ errorMessage: { value: err, type: 'editProfile' } })
-      )
+      .catch((err) => this.setState({ errorMessage: { value: err, type: 'editProfile' } }))
   }
 
   getMovies = (value, short) => {
@@ -134,11 +142,30 @@ class App extends React.PureComponent {
             errorMessage: { value: 'Ничего не найдено :)', type: 'getMovies' },
           })
         }
-        this.setState({ movies: movies, loading: false })
+        this.setState((prev) => {
+          const slicedMovies = movies.slice(0, prev.movies.moviesPerPage)
+          const arrayForHoldingMovies = [...prev.movies.moviesToShow, ...slicedMovies]
+          return { movies: { ...prev.movies, defaultMovies: movies, moviesToShow: arrayForHoldingMovies }, loading: false }
+        })
       })
-      .catch((err) =>
-        this.setState({ errorMessage: { value: err, type: 'getMovies' } })
-      )
+      .catch((err) => this.setState({ errorMessage: { value: err, type: 'getMovies' } }))
+  }
+
+  loopWithSlice = (start, end) => {
+    const slicedMovies = this.state.movies.defaultMovies.slice(start, end)
+    const arrayForHoldingMovies = [...this.state.movies.moviesToShow, ...slicedMovies]
+    console.log('slicedMovies', slicedMovies)
+    console.log('arrayForHoldingMovies', arrayForHoldingMovies)
+    this.setState((prev) => {
+      return { movies: { ...prev.movies, moviesToShow: arrayForHoldingMovies } }
+    })
+  }
+
+  handleShowMoreMovies = () => {
+    this.loopWithSlice(this.state.movies.next, this.state.movies.next + this.state.movies.moviesPerAdding) // Готовим новый массив фильмов
+    this.setState((prev) => {
+      return { movies: { ...prev.movies, next: this.state.movies.next + this.state.movies.moviesPerAdding } }
+    })
   }
 
   getSavedMovies = () => {
@@ -147,44 +174,16 @@ class App extends React.PureComponent {
       .then((res) => {
         console.log('SAVED MOVIES', res)
       })
-      .catch((err) =>
-        this.setState({ errorMessage: { value: err, type: 'getSavedMovies' } })
-      )
+      .catch((err) => this.setState({ errorMessage: { value: err, type: 'getSavedMovies' } }))
   }
 
-  addMovie = (
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    nameRU,
-    nameEN,
-    thumbnail,
-    owner
-  ) => {
+  addMovie = (movie) => {
     mainApi
-      .addMovie(
-        country,
-        director,
-        duration,
-        year,
-        description,
-        image,
-        trailer,
-        nameRU,
-        nameEN,
-        thumbnail,
-        owner
-      )
+      .addMovie(movie)
       .then((res) => {
         console.log('ADD MOVIE RES', res)
       })
-      .catch((err) =>
-        this.setState({ errorMessage: { value: err, type: 'addMovie' } })
-      )
+      .catch((err) => this.setState({ errorMessage: { value: err, type: 'addMovie' } }))
   }
 
   deleteMovie = () => {}
@@ -194,22 +193,22 @@ class App extends React.PureComponent {
   }
 
   render() {
-    // console.log('APP STATE', this.state)
-    // console.log('APP PROPS', this.props)
+    console.log('APP STATE', this.state)
+    console.log('APP PROPS', this.props)
     // console.log('WINDOW', window.screen)
     return (
-      <div className="app">
+      <div className='app'>
         <CurrentUserContext.Provider value={this.state.user}>
           <CurrentMoviesContext.Provider value={this.state.movies}>
             <Switch>
-              <Route exact path="/">
+              <Route exact path='/'>
                 <Header loggedIn={this.state.loggedIn} />
                 <Main />
                 <Footer />
               </Route>
 
               <ProtectedRoute
-                path="/movies"
+                path='/movies'
                 header={true}
                 footer={true}
                 getMovie={this.getMovies}
@@ -219,10 +218,11 @@ class App extends React.PureComponent {
                 loading={this.state.loading}
                 errorMessage={this.state.errorMessage}
                 clearError={this.clearError}
-                component={Movies}
-              ></ProtectedRoute>
+                loopWithSlice={this.loopWithSlice}
+                handleShowMoreMovies={this.handleShowMoreMovies}
+                component={Movies}></ProtectedRoute>
               <ProtectedRoute
-                path="/saved-movies"
+                path='/saved-movies'
                 header={true}
                 footer={true}
                 getMovie={this.getSavedMovies}
@@ -232,10 +232,9 @@ class App extends React.PureComponent {
                 errorMessage={this.state.errorMessage}
                 clearError={this.clearError}
                 loggedIn={this.state.loggedIn}
-                component={SavedMovies}
-              ></ProtectedRoute>
+                component={SavedMovies}></ProtectedRoute>
               <ProtectedRoute
-                path="/profile"
+                path='/profile'
                 header={true}
                 footer={false}
                 loggedIn={this.state.loggedIn}
@@ -243,23 +242,16 @@ class App extends React.PureComponent {
                 getProfile={this.getProfile}
                 ready={this.state.readyEditProfile}
                 editProfile={this.editProfile}
-                component={Profile}
-              ></ProtectedRoute>
+                component={Profile}></ProtectedRoute>
 
-              <Route path="/sign-up">
-                <Register
-                  errorMessage={this.state.errorMessage}
-                  onRegister={this.onRegister}
-                />
+              <Route path='/sign-up'>
+                <Register errorMessage={this.state.errorMessage} onRegister={this.onRegister} />
               </Route>
-              <Route path="/sign-in">
-                <Login
-                  errorMessage={this.state.errorMessage}
-                  onLogin={this.onLogin}
-                />
+              <Route path='/sign-in'>
+                <Login errorMessage={this.state.errorMessage} onLogin={this.onLogin} />
               </Route>
 
-              <Route path="*">
+              <Route path='*'>
                 <NotFound />
               </Route>
             </Switch>

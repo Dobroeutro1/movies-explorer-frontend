@@ -82,35 +82,14 @@ class Api {
   }
 
   // Добавить фильм
-  addMovie = (
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    nameRU,
-    nameEN,
-    thumbnail,
-    owner,
-    next
-  ) => {
+  addMovie = (movie, next) => {
+    console.log(movie)
+    // const image = `https://api.nomoreparties.co${imageUrl}`
     return fetch(`${this.url}/movies`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      country,
       body: JSON.stringify({
-        director,
-        duration,
-        year,
-        description,
-        image,
-        trailer,
-        nameRU,
-        nameEN,
-        owner,
-        thumbnail,
+        movie,
       }),
     })
       .then(checkResponse)

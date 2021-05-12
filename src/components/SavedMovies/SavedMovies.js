@@ -8,12 +8,8 @@ class SavedMovies extends React.PureComponent {
   render() {
     console.log('SAVED MOVIES PROPS', this.props)
     return (
-      <div className="movies">
-        <SearchForm
-          clearError={this.props.clearError}
-          loading={this.props.loading}
-          getMovie={this.props.getMovie}
-        />
+      <div className='movies'>
+        <SearchForm clearError={this.props.clearError} loading={this.props.loading} getMovie={this.props.getMovie} />
         <MoviesCardList
           deleteMovie={this.props.deleteMovie}
           addMovie={this.props.addMovie}

@@ -71,6 +71,7 @@
 }
 
 .error {
+  display: none;
   margin: 0 auto;
   margin-bottom: 5px;
   color: red;
