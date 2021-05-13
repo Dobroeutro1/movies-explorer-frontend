@@ -82,14 +82,21 @@ class Api {
   }
 
   // Добавить фильм
-  addMovie = (movie, next) => {
-    console.log(movie)
-    // const image = `https://api.nomoreparties.co${imageUrl}`
+  addMovie = (country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN, next) => {
     return fetch(`${this.url}/movies`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
       body: JSON.stringify({
-        movie,
+        country,
+        director,
+        duration,
+        year,
+        description,
+        image,
+        trailer,
+        thumbnail,
+        nameRU,
+        nameEN,
       }),
     })
       .then(checkResponse)
@@ -98,12 +105,10 @@ class Api {
 
   // Удалить фильм
   deleteMovie = (id, next) => {
-    return fetch(`${this.url}/movies`, {
+    console.log('ID', id)
+    return fetch(`${this.url}/movies/${id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      body: JSON.stringify({
-        _id: id,
-      }),
     })
       .then(checkResponse)
       .catch(next)

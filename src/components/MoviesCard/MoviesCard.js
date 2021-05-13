@@ -12,17 +12,8 @@ class MoviesCard extends React.PureComponent {
     const nameRU = this.props.movie.nameRU ? this.props.movie.nameRU : 'no data'
     const nameEN = this.props.movie.nameEN ? this.props.movie.nameEN : 'no data'
     const thumbnail = this.props.movie.thumbnail ? this.props.movie.thumbnail : 'https://api.nomoreparties.co'
-    // console.log('country', country)
-    // console.log('director', director)
-    // console.log('duration', duration)
-    // console.log('year', year)
-    // console.log('description', description)
-    // console.log('image', image)
-    // console.log('trailer', trailer)
-    // console.log('nameRU', nameRU)
-    // console.log('nameEN', nameEN)
-    // console.log('thumbnail', thumbnail)
-    const movie = {
+
+    console.log('ADD MOVIE', {
       country,
       director,
       duration,
@@ -33,13 +24,16 @@ class MoviesCard extends React.PureComponent {
       thumbnail,
       nameRU,
       nameEN,
-    }
-    console.log('ADD MOVIE', movie)
-    this.props.addMovie(movie)
+    })
+    this.props.addMovie(country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN)
+  }
+
+  deleteMovie = () => {
+    this.props.deleteMovie(this.props.movie._id)
   }
 
   render() {
-    // console.log('PROPS MOVIE', this.props.movie)
+    console.log('PROPS MOVIE', this.props)
 
     return (
       <div className='card'>
@@ -49,8 +43,11 @@ class MoviesCard extends React.PureComponent {
           </a>
           <p className='card__duration'>{this.props.movie.duration} минут</p>
         </div>
-        <img src={` https://api.nomoreparties.co${this.props.movie.image?.url}`} alt={this.props.movie.nameRU} className='card__img'></img>
-        {this.props.path === '/saved-movies' ? <button onClick={this.props.deleteMovie} className='card__btn card__btn_deleted'></button> : null}
+        <img
+          src={`${this.props.movie.image.url ? `https://api.nomoreparties.co${this.props.movie.image?.url}` : this.props.movie.image}`}
+          alt={this.props.movie.nameRU}
+          className='card__img'></img>
+        {this.props.path === '/saved-movies' ? <button onClick={this.deleteMovie} className='card__btn card__btn_deleted'></button> : null}
         {this.props.added && this.props.path === '/movies' ? <button className='card__btn card__btn_checked'></button> : null}
         {!this.props.added && this.props.path === '/movies' ? (
           <button onClick={this.addMovie} className='card__btn'>

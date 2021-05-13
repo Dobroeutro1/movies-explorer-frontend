@@ -1,5 +1,5 @@
 export function checkResponse(res) {
-  console.log('CHECK RESPONSE', res)
+  // console.log('CHECK RESPONSE', res)
 
   if (res.ok) {
     return res.json()

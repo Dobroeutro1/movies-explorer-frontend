@@ -7,16 +7,11 @@ class SavedMovies extends React.PureComponent {
   static contextType = CurrentMoviesContext
   render() {
     console.log('SAVED MOVIES PROPS', this.props)
+    console.log('SAVED MOVIES CONTEXT', this.context)
     return (
       <div className='movies'>
         <SearchForm clearError={this.props.clearError} loading={this.props.loading} getMovie={this.props.getMovie} />
-        <MoviesCardList
-          deleteMovie={this.props.deleteMovie}
-          addMovie={this.props.addMovie}
-          errorMessage={this.props.errorMessage}
-          movies={this.context}
-          path={this.props.path}
-        />
+        <MoviesCardList deleteMovie={this.props.deleteMovie} errorMessage={this.props.errorMessage} movies={this.context} path={this.props.path} />
       </div>
     )
   }

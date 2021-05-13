@@ -62,10 +62,6 @@
   display: none;
 }
 
-.opened {
-  display: flex;
-}
-
 .disabled {
   opacity: 0.5;
 }
@@ -77,4 +73,8 @@
   color: red;
   font-size: 14px;
   line-height: 16px;
+}
+
+.opened {
+  display: flex;
 }

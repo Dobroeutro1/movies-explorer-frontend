@@ -27,26 +27,19 @@ class App extends React.PureComponent {
       loggedIn: false,
       loading: false,
       movies: {
-        defaultMovies: [],
-        moviesPerPage: 12,
-        moviesPerAdding: 3,
-        moviesToShow: [],
-        next: 12,
+        findedMovies: { defaultMovies: [], moviesPerPage: 12, moviesPerAdding: 3, moviesToShow: [], next: 12 },
+        savedMovies: [],
       },
-      SavedMovies: [],
       errorMessage: { value: '', type: '' },
     }
   }
 
   componentDidMount = () => {
-    console.log('MOUNT!!!', window.screen)
-
     const token = localStorage.getItem('token')
     if (token) {
       mainApi
         .checkToken(token)
         .then((res) => {
-          console.log('CHECK TOKEN RES', res)
           if (res) {
             this.setState({ loggedIn: true, user: { email: res.email, name: res.name } })
             this.props.history.push('/movies')
@@ -55,6 +48,7 @@ class App extends React.PureComponent {
         .catch((err) => this.setState({ errorMessage: { value: err, type: 'token' } }))
 
       this.getProfile()
+      this.getSavedMovies()
       if (window.screen.width < 1279 && window.screen.width > 752) {
         this.setState((prev) => {
           return { movies: { ...prev.movies, moviesPerPage: 8, next: 8, moviesPerAdding: 2 } }
@@ -75,11 +69,16 @@ class App extends React.PureComponent {
     mainApi
       .register(email, password, name)
       .then((res) => {
-        console.log('REGISTER RES', res)
-        this.setState({ user: { email: email, name: name } })
+        this.setState((prev) => {
+          return { ...prev, user: { email: email, name: name } }
+        })
         this.props.history.push('/sign-in')
       })
-      .catch((err) => this.setState({ errorMessage: { value: err, type: 'register' } }))
+      .catch((err) =>
+        this.setState((prev) => {
+          return { ...prev, errorMessage: { value: err, type: 'register' } }
+        })
+      )
   }
 
   // Логин
@@ -87,7 +86,6 @@ class App extends React.PureComponent {
     mainApi
       .authorize(email, password)
       .then((res) => {
-        console.log('LOGIN RES', res)
         if (res) {
           localStorage.setItem('token', res.token)
           this.setState({ loggedIn: true })
@@ -95,13 +93,19 @@ class App extends React.PureComponent {
           this.getProfile()
         }
       })
-      .catch((err) => this.setState({ errorMessage: { value: err, type: 'login' } }))
+      .catch((err) =>
+        this.setState((prev) => {
+          return { ...prev, errorMessage: { value: err, type: 'login' } }
+        })
+      )
   }
 
   // Логаут
   onSignOut = () => {
     localStorage.removeItem('token')
-    this.setState({ loggedIn: false })
+    this.setState((prev) => {
+      return { ...prev, loggedIn: false }
+    })
     this.props.history.push('/sign-in')
   }
 
@@ -110,10 +114,15 @@ class App extends React.PureComponent {
     mainApi
       .getProfile()
       .then((res) => {
-        console.log('PROFILE RES', res)
-        this.setState({ user: { email: res.email, name: res.name } })
+        this.setState((prev) => {
+          return { ...prev, user: { email: res.email, name: res.name } }
+        })
       })
-      .catch((err) => this.setState({ errorMessage: { value: err, type: 'getProfile' } }))
+      .catch((err) =>
+        this.setState((prev) => {
+          return { ...prev, errorMessage: { value: err, type: 'getProfile' } }
+        })
+      )
   }
 
   // Изменить данные профиля
@@ -121,41 +130,49 @@ class App extends React.PureComponent {
     mainApi
       .editProfile(email, name)
       .then((res) => {
-        console.log('EDIT PROFILE RES', res)
-        this.setState({ user: { email: res.email, name: res.name } })
+        this.setState((prev) => {
+          return { ...prev, user: { email: res.email, name: res.name } }
+        })
       })
-      .catch((err) => this.setState({ errorMessage: { value: err, type: 'editProfile' } }))
+      .catch((err) =>
+        this.setState((prev) => {
+          return { ...prev, errorMessage: { value: err, type: 'editProfile' } }
+        })
+      )
   }
 
   getMovies = (value, short) => {
-    console.log('value', value)
-    console.log('short', short)
-    this.setState({ loading: true })
+    this.setState((prev) => {
+      return { ...prev, loading: true, movies: { ...prev.movies, defaultMovies: [], moviesToShow: [] } }
+    })
     moviesApi
       .getMovies()
       .then((res) => {
-        console.log('MOVIES RES', res)
         const movies = filterMovies(res, value, short)
-        console.log('FILTER MOVIES', movies)
-        if (filterMovies.length < 1) {
-          this.setState({
-            errorMessage: { value: 'Ничего не найдено :)', type: 'getMovies' },
+        if (movies.length < 1) {
+          this.setState((prev) => {
+            return {
+              ...prev,
+              errorMessage: { value: 'Ничего не найдено :)', type: 'getMovies' },
+            }
           })
         }
         this.setState((prev) => {
           const slicedMovies = movies.slice(0, prev.movies.moviesPerPage)
           const arrayForHoldingMovies = [...prev.movies.moviesToShow, ...slicedMovies]
-          return { movies: { ...prev.movies, defaultMovies: movies, moviesToShow: arrayForHoldingMovies }, loading: false }
+          return { movies: { ...prev.movies, findedMovies: { ...prev.movies.findedMovies, defaultMovies: movies, moviesToShow: arrayForHoldingMovies } }, loading: false }
         })
       })
-      .catch((err) => this.setState({ errorMessage: { value: err, type: 'getMovies' } }))
+      .catch((err) =>
+        this.setState((prev) => {
+          return { ...prev, errorMessage: { value: err, type: 'getMovies' } }
+        })
+      )
   }
 
   loopWithSlice = (start, end) => {
     const slicedMovies = this.state.movies.defaultMovies.slice(start, end)
     const arrayForHoldingMovies = [...this.state.movies.moviesToShow, ...slicedMovies]
-    console.log('slicedMovies', slicedMovies)
-    console.log('arrayForHoldingMovies', arrayForHoldingMovies)
     this.setState((prev) => {
       return { movies: { ...prev.movies, moviesToShow: arrayForHoldingMovies } }
     })
@@ -172,30 +189,50 @@ class App extends React.PureComponent {
     mainApi
       .getSavedMovies()
       .then((res) => {
-        console.log('SAVED MOVIES', res)
+        this.setState((prev) => {
+          return { ...prev, movies: { ...prev.movies, savedMovies: res } }
+        })
       })
-      .catch((err) => this.setState({ errorMessage: { value: err, type: 'getSavedMovies' } }))
+      .catch((err) =>
+        this.setState((prev) => {
+          return { ...prev, errorMessage: { value: err, type: 'getSavedMovies' } }
+        })
+      )
   }
 
-  addMovie = (movie) => {
+  addMovie = (country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN) => {
     mainApi
-      .addMovie(movie)
-      .then((res) => {
-        console.log('ADD MOVIE RES', res)
-      })
-      .catch((err) => this.setState({ errorMessage: { value: err, type: 'addMovie' } }))
+      .addMovie(country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN)
+      .then((res) => {})
+      .catch((err) =>
+        this.setState((prev) => {
+          return { ...prev, errorMessage: { value: err, type: 'addMovie' } }
+        })
+      )
   }
 
-  deleteMovie = () => {}
+  deleteMovie = (id) => {
+    mainApi
+      .deleteMovie(id)
+      .then((res) => {
+        console.log('DELETEMOVIE', res)
+      })
+      .catch((err) =>
+        this.setState((prev) => {
+          return { ...prev, errorMessage: { value: err, type: 'deleteMovie' } }
+        })
+      )
+  }
 
   clearError = () => {
-    this.setState({ errorMessage: { value: '', type: '' } })
+    this.setState((prev) => {
+      return { ...prev, errorMessage: { value: '', type: '' } }
+    })
   }
 
   render() {
-    console.log('APP STATE', this.state)
-    console.log('APP PROPS', this.props)
-    // console.log('WINDOW', window.screen)
+    // console.log('APP STATE', this.state)
+    // console.log('APP PROPS', this.props)
     return (
       <div className='app'>
         <CurrentUserContext.Provider value={this.state.user}>
@@ -226,8 +263,7 @@ class App extends React.PureComponent {
                 header={true}
                 footer={true}
                 getMovie={this.getSavedMovies}
-                deleteMovie={this.props.deleteMovie}
-                addMovie={this.props.addMovie}
+                deleteMovie={this.deleteMovie}
                 loading={this.state.loading}
                 errorMessage={this.state.errorMessage}
                 clearError={this.clearError}
