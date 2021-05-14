@@ -82,10 +82,26 @@ class Api {
   }
 
   // Добавить фильм
-  addMovie = (country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN, next) => {
+  addMovie = (
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    thumbnail,
+    nameRU,
+    nameEN,
+    id,
+    next
+  ) => {
     return fetch(`${this.url}/movies`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
       body: JSON.stringify({
         country,
         director,
@@ -97,6 +113,7 @@ class Api {
         thumbnail,
         nameRU,
         nameEN,
+        id,
       }),
     })
       .then(checkResponse)
@@ -105,7 +122,6 @@ class Api {
 
   // Удалить фильм
   deleteMovie = (id, next) => {
-    console.log('ID', id)
     return fetch(`${this.url}/movies/${id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
