@@ -15,6 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "npm run build && scp -r ./build/* ssh user@84.252.135.193:/home/user/news-frontend",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

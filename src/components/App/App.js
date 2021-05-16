@@ -14,29 +14,24 @@ import moviesApi from '../../utils/MoviesApi'
 import mainApi from '../../utils/MainApi'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import CurrentMoviesContext from '../../contexts/CurrentMoviesContext'
-import { filterMovies } from '../../utils/utils'
+import { checkWindowWidth } from '../../utils/utils'
 
 class App extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
       user: {
-        email: '',
-        name: '',
+        email: { value: '', valid: true },
+        name: { value: '', valid: true },
+      },
+      movies: {
+        loadingMovies: [],
+        savedMovies: [],
+        shortMovie: false,
+        movieValue: '',
       },
       loggedIn: false,
       loading: false,
-      movies: {
-        findedMovies: {
-          defaultMovies: [],
-          moviesPerPage: 12,
-          moviesPerAdding: 3,
-          moviesToShow: [],
-          next: 12,
-        },
-        savedMovies: [],
-        savedMoviesId: [],
-      },
       errorMessage: { value: '', type: '' },
     }
   }
@@ -50,7 +45,10 @@ class App extends React.PureComponent {
           if (res) {
             this.setState({
               loggedIn: true,
-              user: { email: res.email, name: res.name },
+              user: {
+                email: { value: res.email, valid: true },
+                name: { value: res.name, valid: true },
+              },
             })
             this.props.history.push('/movies')
           }
@@ -59,33 +57,10 @@ class App extends React.PureComponent {
           this.setState({ errorMessage: { value: err, type: 'token' } })
         )
 
-      this.getProfile()
+      this.getMovies()
       this.getSavedMovies()
-      if (window.screen.width < 1279 && window.screen.width > 752) {
-        this.setState((prev) => {
-          return {
-            movies: {
-              ...prev.movies,
-              moviesPerPage: 8,
-              next: 8,
-              moviesPerAdding: 2,
-            },
-          }
-        })
-      }
 
-      if (window.screen.width < 752) {
-        this.setState((prev) => {
-          return {
-            movies: {
-              ...prev.movies,
-              moviesPerPage: 5,
-              next: 5,
-              moviesPerAdding: 2,
-            },
-          }
-        })
-      }
+      checkWindowWidth()
     }
     this.setState({ errorMessage: { value: '', type: '' } })
   }
@@ -117,6 +92,7 @@ class App extends React.PureComponent {
           this.setState({ loggedIn: true })
           this.props.history.push('/movies')
           this.getProfile()
+          this.getMovies()
         }
       })
       .catch((err) =>
@@ -140,8 +116,16 @@ class App extends React.PureComponent {
     mainApi
       .getProfile()
       .then((res) => {
+        console.log('RES', res)
+        console.log('RES STATE', this.state.user)
         this.setState((prev) => {
-          return { ...prev, user: { email: res.email, name: res.name } }
+          return {
+            ...prev,
+            user: {
+              email: { value: res.email, valid: true },
+              name: { value: res.name, valid: true },
+            },
+          }
         })
       })
       .catch((err) =>
@@ -157,7 +141,13 @@ class App extends React.PureComponent {
       .editProfile(email, name)
       .then((res) => {
         this.setState((prev) => {
-          return { ...prev, user: { email: res.email, name: res.name } }
+          return {
+            ...prev,
+            user: {
+              email: { value: res.email, valid: true },
+              name: { value: res.name, valid: true },
+            },
+          }
         })
       })
       .catch((err) =>
@@ -167,20 +157,31 @@ class App extends React.PureComponent {
       )
   }
 
-  getMovies = (value, short) => {
+  handleMovieValue = (value) => {
+    this.setState((prev) => {
+      return { ...prev, movies: { ...prev.movies, movieValue: value } }
+    })
+  }
+
+  handleShortMovie = (bool) => {
+    this.setState((prev) => {
+      return { ...prev, movies: { ...prev.movies, shortMovie: bool } }
+    })
+  }
+
+  // Получить все фильмы
+  getMovies = () => {
     this.setState((prev) => {
       return {
         ...prev,
         loading: true,
-        movies: { ...prev.movies, defaultMovies: [], moviesToShow: [] },
       }
     })
+
     moviesApi
       .getMovies()
       .then((res) => {
-        const movies = filterMovies(res, value, short)
-
-        if (movies.length < 1) {
+        if (res.length < 1) {
           this.setState((prev) => {
             return {
               ...prev,
@@ -193,21 +194,10 @@ class App extends React.PureComponent {
         }
 
         this.setState((prev) => {
-          const slicedMovies = movies.slice(0, prev.movies.moviesPerPage)
-          const arrayForHoldingMovies = [
-            ...prev.movies.moviesToShow,
-            ...slicedMovies,
-          ]
           return {
-            movies: {
-              ...prev.movies,
-              findedMovies: {
-                ...prev.movies.findedMovies,
-                defaultMovies: movies,
-                moviesToShow: arrayForHoldingMovies,
-              },
-            },
+            ...prev,
             loading: false,
+            movies: { ...prev.movies, loadingMovies: res },
           }
         })
       })
@@ -218,47 +208,15 @@ class App extends React.PureComponent {
       )
   }
 
-  loopWithSlice = (start, end) => {
-    const slicedMovies = this.state.movies.defaultMovies.slice(start, end)
-    const arrayForHoldingMovies = [
-      ...this.state.movies.moviesToShow,
-      ...slicedMovies,
-    ]
-    this.setState((prev) => {
-      return { movies: { ...prev.movies, moviesToShow: arrayForHoldingMovies } }
-    })
-  }
-
-  handleShowMoreMovies = () => {
-    this.loopWithSlice(
-      this.state.movies.next,
-      this.state.movies.next + this.state.movies.moviesPerAdding
-    )
-    this.setState((prev) => {
-      return {
-        movies: {
-          ...prev.movies,
-          next: this.state.movies.next + this.state.movies.moviesPerAdding,
-        },
-      }
-    })
-  }
-
+  // Получить сохраненные фильмы
   getSavedMovies = () => {
     mainApi
       .getSavedMovies()
       .then((res) => {
         this.setState((prev) => {
-          const moviesId = res.map((el) => {
-            return el.id
-          })
           return {
             ...prev,
-            movies: {
-              ...prev.movies,
-              savedMovies: res,
-              savedMoviesId: moviesId,
-            },
+            movies: { ...prev.movies, savedMovies: res },
           }
         })
       })
@@ -272,6 +230,7 @@ class App extends React.PureComponent {
       )
   }
 
+  // Добавить фильм
   addMovie = (
     country,
     director,
@@ -307,10 +266,13 @@ class App extends React.PureComponent {
       )
   }
 
+  // Удалить фильм
   deleteMovie = (id) => {
     mainApi
       .deleteMovie(id)
-      .then((res) => {})
+      .then((res) => {
+        console.log('DELETE RES', res)
+      })
       .catch((err) =>
         this.setState((prev) => {
           return { ...prev, errorMessage: { value: err, type: 'deleteMovie' } }
@@ -325,6 +287,11 @@ class App extends React.PureComponent {
   }
 
   render() {
+    // console.group('APP')
+    // console.log('STATE', this.state.movies)
+    // console.log('PROPS', this.props)
+    // console.groupEnd()
+    // console.log('APP STATE', this.state)
     return (
       <div className="app">
         <CurrentUserContext.Provider value={this.state.user}>
@@ -340,15 +307,16 @@ class App extends React.PureComponent {
                 path="/movies"
                 header={true}
                 footer={true}
-                getMovie={this.getMovies}
                 deleteMovie={this.deleteMovie}
                 addMovie={this.addMovie}
                 loggedIn={this.state.loggedIn}
                 loading={this.state.loading}
                 errorMessage={this.state.errorMessage}
+                handleShortMovie={this.handleShortMovie}
+                handleMovieValue={this.handleMovieValue}
                 clearError={this.clearError}
-                loopWithSlice={this.loopWithSlice}
-                handleShowMoreMovies={this.handleShowMoreMovies}
+                movieValue={this.state.movies.movieValue}
+                shortMovie={this.state.movies.shortMovie}
                 component={Movies}
               ></ProtectedRoute>
               <ProtectedRoute
@@ -359,8 +327,10 @@ class App extends React.PureComponent {
                 deleteMovie={this.deleteMovie}
                 loading={this.state.loading}
                 errorMessage={this.state.errorMessage}
+                handleShortMovie={this.handleShortMovie}
                 clearError={this.clearError}
                 loggedIn={this.state.loggedIn}
+                shortMovie={this.state.movies.shortMovie}
                 component={SavedMovies}
               ></ProtectedRoute>
               <ProtectedRoute

@@ -4,7 +4,7 @@ class MoviesCard extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      added: this.props.added,
+      added: this.props.movie.added,
     }
   }
 
@@ -52,10 +52,15 @@ class MoviesCard extends React.PureComponent {
   }
 
   deleteMovie = () => {
-    this.props.deleteMovie(this.props.movie._id)
+    this.props.deleteMovie(this.props.movie.id)
+    this.setState({ added: false })
   }
 
   render() {
+    // console.group('MOVIE CARD')
+    // console.log('PROPS', this.props)
+    // console.log('STATE', this.state)
+    // console.groupEnd()
     return (
       <div className="card">
         <div className="card__header">
@@ -91,7 +96,10 @@ class MoviesCard extends React.PureComponent {
           ></button>
         ) : null}
         {this.state.added && this.props.path === '/movies' ? (
-          <button className="card__btn card__btn_checked"></button>
+          <button
+            onClick={this.deleteMovie}
+            className="card__btn card__btn_checked"
+          ></button>
         ) : null}
         {!this.state.added && this.props.path === '/movies' ? (
           <button onClick={this.addMovie} className="card__btn">

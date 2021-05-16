@@ -1,68 +1,123 @@
 import React from 'react'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
+import ValidationForm from '../../utils/ValidationForm'
 
 class Profile extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      user: {
-        email: '',
-        name: '',
-      },
+      email: { value: '', valid: true },
+      name: { value: '', valid: true },
       ready: false,
+      message: false,
     }
   }
 
   static contextType = CurrentUserContext
 
   componentDidMount = () => {
-    this.setState({ user: this.context })
+    this.setState((prev) => {
+      return {
+        ...prev,
+        email: { ...prev.email, value: this.context.email.value },
+        name: { ...prev.name, value: this.context.name.value },
+        message: false,
+      }
+    })
+  }
+
+  handleReady = () => {
+    return this.setState((prev) => {
+      const ready =
+        ValidationForm('email', this.state.email.value) &&
+        ValidationForm('name', this.state.name.value)
+      return { ...prev, ready: ready }
+    })
   }
 
   onChange = (e) => {
     const { id, value } = e.target
+    const valid = ValidationForm(id, value)
 
     this.setState((prev) => {
-      if (value === this.context.email || value === this.context.name) {
+      if (
+        value === this.context.email.value ||
+        value === this.context.name.value
+      ) {
         return {
           ...prev,
-          user: { ...prev.user, [id]: value },
-          ready: false,
+          [id]: { ...prev[id], value: value, valid: valid },
+          message: false,
         }
       }
 
-      return { ...prev, user: { ...prev.user, [id]: value }, ready: true }
-    })
+      return {
+        ...prev,
+        [id]: { ...prev[id], value: value, valid: valid },
+        message: false,
+      }
+    }, this.handleReady)
   }
 
   editProfile = (e) => {
     e.preventDefault()
-    this.props.editProfile(this.state.user.email, this.state.user.name)
-    this.setState({ ready: false })
+    this.props.editProfile(this.state.email.value, this.state.name.value)
+    this.setState((prev) => {
+      return { ...prev, ready: false, message: true }
+    })
   }
 
   render() {
+    console.log('PROFILE PROPS', this.props)
+    console.log('PROFILE CONTEXT', this.context)
+    console.log('PROFILE STATE', this.state)
     return (
       <div className="profile">
-        <h1 className="profile__title">Привет, {this.context.name}!</h1>
+        <span
+          className={`profile__span_edit ${
+            !this.state.message ? '' : 'opened'
+          }`}
+        >
+          Изменения успешно применены!
+        </span>
+        <h1 className="profile__title">Привет, {this.context.name.value}!</h1>
+
         <form className="profile__info">
           <div className="profile__info_element">
-            <p className="profile__info_text">Имя</p>
-            <input
-              onChange={this.onChange}
-              id="name"
-              value={this.state.user.name}
-              className="profile__info_text profile__info_input"
-            />
+            <div className="profile__info_group">
+              <p className="profile__info_text">Имя</p>
+              <input
+                onChange={this.onChange}
+                id="name"
+                value={this.state.name.value}
+                className="profile__info_text profile__info_input"
+              />
+            </div>
+            <span
+              className={`profile__span ${
+                this.state.name.valid ? '' : 'opened'
+              }`}
+            >
+              Что-то пошло не так...
+            </span>
           </div>
           <div className="profile__info_element">
-            <p className="profile__info_text">E-mail</p>
-            <input
-              onChange={this.onChange}
-              id="email"
-              value={this.state.user.email}
-              className="profile__info_text profile__info_input"
-            />
+            <div className="profile__info_group">
+              <p className="profile__info_text">E-mail</p>
+              <input
+                onChange={this.onChange}
+                id="email"
+                value={this.state.email.value}
+                className="profile__info_text profile__info_input"
+              />
+            </div>
+            <span
+              className={`profile__span ${
+                this.state.email.valid ? '' : 'opened'
+              }`}
+            >
+              Что-то пошло не так...
+            </span>
           </div>
           <button
             disabled={!this.state.ready}

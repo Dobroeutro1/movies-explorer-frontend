@@ -124,7 +124,10 @@ class Api {
   deleteMovie = (id, next) => {
     return fetch(`${this.url}/movies/${id}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
     })
       .then(checkResponse)
       .catch(next)
