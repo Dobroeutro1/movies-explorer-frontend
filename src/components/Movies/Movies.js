@@ -15,11 +15,16 @@ class Movies extends React.PureComponent {
 
   static contextType = CurrentMoviesContext
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate(prevProps) {
     if (prevProps.movieValue !== this.props.movieValue) {
       this.setState((prev) => {
-        return { ...prev, errorMessage: { value: '', type: '' } }
+        return {
+          ...prev,
+          filteredMovies: [],
+          errorMessage: { value: '', type: '' },
+        }
       })
+
       this.findMovie()
     }
 
@@ -32,7 +37,12 @@ class Movies extends React.PureComponent {
   }
 
   findMovie = () => {
-    const filter = filterMovies(this.context.loadingMovies, this.context.savedMovies, this.props.movieValue, this.props.shortMovie)
+    const filter = filterMovies(
+      this.context.loadingMovies,
+      this.context.savedMovies,
+      this.props.movieValue,
+      this.props.shortMovie
+    )
 
     if (filter.length < 1) {
       return this.setState((prev) => {
@@ -48,7 +58,7 @@ class Movies extends React.PureComponent {
       })
     }
 
-    this.setState((prev) => {
+    return this.setState((prev) => {
       return {
         ...prev,
         filteredMovies: filter,
@@ -58,13 +68,13 @@ class Movies extends React.PureComponent {
   }
 
   render() {
-    console.group('MOVIES')
-    console.log('PROPS', this.props)
-    console.log('STATE', this.state)
-    console.log('CONTEXT', this.context)
-    console.groupEnd()
+    // console.group('MOVIES')
+    // console.log('PROPS', this.props)
+    // console.log('STATE', this.state)
+    // console.log('CONTEXT', this.context)
+    // console.groupEnd()
     return (
-      <div className='movies'>
+      <div className="movies">
         <SearchForm
           clearError={this.props.clearError}
           loading={this.props.loading}

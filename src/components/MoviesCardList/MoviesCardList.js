@@ -36,33 +36,64 @@ class MoviesCardList extends React.PureComponent {
 
   // Обработчик нажатия кнопки добавления фильмов «Ещё»
   handleShowMoreMovies = () => {
-    this.loopWithSlice(this.state.next, this.state.next + this.state.moviesPerAdding) // Готовим новый массив фильмов
+    this.loopWithSlice(
+      this.state.next,
+      this.state.next + this.state.moviesPerAdding
+    ) // Готовим новый массив фильмов
     this.setState((prev) => {
       return { ...prev, next: prev.next + this.state.moviesPerAdding }
     })
   }
 
   render() {
-    console.group('MOVIES CARD LIST')
-    console.log('PROPS', this.props.movies)
-    console.log('STATE', this.state)
-    console.groupEnd()
+    // console.group('MOVIES CARD LIST')
+    // console.log('PROPS', this.props.movies)
+    // console.log('STATE', this.state)
+    // console.groupEnd()
 
     return (
       <>
-        <span className={`error ${this.props.errorMessage.type === 'filter' ? 'opened' : ''}`}>{this.props.errorMessage.value}</span>
-        <div className='movies-grid'>
+        <span
+          className={`error ${
+            this.props.errorMessage.type === 'filter' ? 'opened' : ''
+          }`}
+        >
+          {this.props.errorMessage.value}
+        </span>
+        <div className="movies-grid">
           {this.props.path === '/saved-movies'
             ? this.props.movies.map((movie) => {
-                return <MoviesCard deleteMovie={this.props.deleteMovie} addMovie={this.props.addMovie} movie={movie} key={movie.id} path={this.props.path} />
+                return (
+                  <MoviesCard
+                    deleteMovie={this.props.deleteMovie}
+                    addMovie={this.props.addMovie}
+                    movie={movie}
+                    key={movie.id}
+                    path={this.props.path}
+                  />
+                )
               })
             : this.state.moviesToShow.map((movie) => {
-                return <MoviesCard deleteMovie={this.props.deleteMovie} addMovie={this.props.addMovie} movie={movie} key={movie.id} path={this.props.path} />
+                return (
+                  <MoviesCard
+                    deleteMovie={this.props.deleteMovie}
+                    addMovie={this.props.addMovie}
+                    movie={movie}
+                    key={movie.id}
+                    path={this.props.path}
+                  />
+                )
               })}
         </div>
         <button
           onClick={this.handleShowMoreMovies}
-          className={`movies-grid__btn ${this.props.path === '/saved-movies' || this.state.moviesToShow.length < this.state.next ? 'closed' : ''}`}>
+          className={`movies-grid__btn ${
+            this.props.path === '/saved-movies' ||
+            this.state.moviesToShow.length < this.state.next
+              ? 'closed'
+              : ''
+          }`}
+        >
           Ещё
         </button>
       </>

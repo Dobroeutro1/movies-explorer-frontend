@@ -17,7 +17,14 @@ class SavedMovies extends React.PureComponent {
     this.filter()
   }
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = (prevProps, prevState, prevContext) => {
+    console.log('prevProps', prevProps)
+    console.log('thisProps', this.props)
+    console.log('prevProps', prevState)
+    console.log('thisProps', this.state)
+    console.log('prevProps', prevContext)
+    console.log('thisProps', this.state)
+    console.log(this.context)
     if (prevProps.shortMovie !== this.props.shortMovie) {
       this.setState((prev) => {
         return { ...prev, errorMessage: { value: '', type: '' } }
@@ -27,6 +34,7 @@ class SavedMovies extends React.PureComponent {
   }
 
   filter = () => {
+    console.log('!!!!!!!!!!!!!!!!!', this.context.savedMovies)
     const showFilms = filterShortMovies(
       this.context.savedMovies,
       this.context.shortMovie
@@ -39,7 +47,7 @@ class SavedMovies extends React.PureComponent {
   render() {
     console.group('SAVED MOVIES')
     console.log('PROPS', this.props)
-    console.log('STATE', this.state)
+    // console.log('STATE', this.state)
     console.log('CONTEXT', this.context)
     console.groupEnd()
     return (
