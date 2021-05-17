@@ -32,12 +32,7 @@ class Movies extends React.PureComponent {
   }
 
   findMovie = () => {
-    const filter = filterMovies(
-      this.context.loadingMovies,
-      this.context.savedMovies,
-      this.props.movieValue,
-      this.props.shortMovie
-    )
+    const filter = filterMovies(this.context.loadingMovies, this.context.savedMovies, this.props.movieValue, this.props.shortMovie)
 
     if (filter.length < 1) {
       return this.setState((prev) => {
@@ -62,32 +57,6 @@ class Movies extends React.PureComponent {
     })
   }
 
-  loopWithSlice = (start, end) => {
-    const slicedMovies = this.state.movies.defaultMovies.slice(start, end)
-    const arrayForHoldingMovies = [
-      ...this.state.movies.moviesToShow,
-      ...slicedMovies,
-    ]
-    this.setState((prev) => {
-      return { movies: { ...prev.movies, moviesToShow: arrayForHoldingMovies } }
-    })
-  }
-
-  handleShowMoreMovies = () => {
-    this.loopWithSlice(
-      this.state.movies.next,
-      this.state.movies.next + this.state.movies.moviesPerAdding
-    )
-    this.setState((prev) => {
-      return {
-        movies: {
-          ...prev.movies,
-          next: this.state.movies.next + this.state.movies.moviesPerAdding,
-        },
-      }
-    })
-  }
-
   render() {
     console.group('MOVIES')
     console.log('PROPS', this.props)
@@ -95,7 +64,7 @@ class Movies extends React.PureComponent {
     console.log('CONTEXT', this.context)
     console.groupEnd()
     return (
-      <div className="movies">
+      <div className='movies'>
         <SearchForm
           clearError={this.props.clearError}
           loading={this.props.loading}
