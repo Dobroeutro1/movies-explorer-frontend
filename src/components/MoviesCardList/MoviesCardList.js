@@ -15,23 +15,35 @@ class MoviesCardList extends React.PureComponent {
 
   componentDidMount = () => {
     checkWindowWidth()
-    this.loopWithSlice(0, this.state.moviesPerPage)
+    // this.updateState()
+    // this.setState({})
   }
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = (prevProps, prevState) => {
     if (prevProps.movies !== this.props.movies) {
-      this.loopWithSlice(0, this.state.moviesPerPage)
+      console.log('UPDATE PROPS!!!', this.props.movies)
+      this.setState({ next: 12, moviesToShow: [] }, this.updateState)
+      // this.loopWithSlice(0, this.state.moviesPerPage)
     }
+
+    if (prevState.moviesToShow !== this.state.moviesToShow) {
+      console.log('UPDATE STATE!!!')
+      // this.loopWithSlice(0, this.state.moviesPerPage)
+    }
+  }
+
+  updateState = () => {
+    console.log('CALL updateState!!!')
+    this.loopWithSlice(0, this.state.moviesPerPage)
   }
 
   // Обрезает массив фильмов и передаёт новый массив
   loopWithSlice = (start, end) => {
     const slicedMovies = this.props.movies.slice(start, end)
     let arrayForHoldingMovies = [...this.state.moviesToShow, ...slicedMovies]
+    console.log('slicedMovies', slicedMovies)
     console.log('arrayForHoldingMovies', arrayForHoldingMovies)
-    this.setState((prev) => {
-      return { ...prev, moviesToShow: arrayForHoldingMovies }
-    })
+    this.setState({ moviesToShow: arrayForHoldingMovies })
   }
 
   // Обработчик нажатия кнопки добавления фильмов «Ещё»
@@ -46,10 +58,10 @@ class MoviesCardList extends React.PureComponent {
   }
 
   render() {
-    // console.group('MOVIES CARD LIST')
-    // console.log('PROPS', this.props.movies)
-    // console.log('STATE', this.state)
-    // console.groupEnd()
+    console.group('MOVIES CARD LIST')
+    console.log('PROPS', this.props.movies)
+    console.log('STATE', this.state.moviesToShow)
+    console.groupEnd()
 
     return (
       <>
@@ -61,7 +73,7 @@ class MoviesCardList extends React.PureComponent {
           {this.props.errorMessage.value}
         </span>
         <div className="movies-grid">
-          {this.props.path === '/saved-movies'
+          {/* {this.props.path === '/saved-movies'
             ? this.props.movies.map((movie) => {
                 return (
                   <MoviesCard
@@ -83,7 +95,7 @@ class MoviesCardList extends React.PureComponent {
                     path={this.props.path}
                   />
                 )
-              })}
+              })} */}
         </div>
         <button
           onClick={this.handleShowMoreMovies}

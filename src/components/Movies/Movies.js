@@ -1,5 +1,4 @@
 import React from 'react'
-import CurrentMoviesContext from '../../contexts/CurrentMoviesContext'
 import MoviesCardList from '../MoviesCardList/MoviesCardList'
 import SearchForm from '../SearchForm/SearchForm'
 import { filterMovies } from '../../utils/utils'
@@ -9,40 +8,47 @@ class Movies extends React.PureComponent {
     super(props)
     this.state = {
       filteredMovies: [],
+      value: '',
+      short: false,
       errorMessage: { value: '', type: '' },
     }
   }
 
-  static contextType = CurrentMoviesContext
+  componentDidMount() {
+    localStorage.setItem('path', '/movies')
+  }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.movieValue !== this.props.movieValue) {
-      this.setState((prev) => {
-        return {
-          ...prev,
-          filteredMovies: [],
-          errorMessage: { value: '', type: '' },
-        }
-      })
-
-      this.findMovie()
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.value !== this.state.value) {
+      this.setState({ filteredMovies: [] }, this.findMovie)
+      // this.findMovie()
     }
 
-    if (prevProps.shortMovie !== this.props.shortMovie) {
-      this.setState((prev) => {
-        return { ...prev, errorMessage: { value: '', type: '' } }
-      })
-      this.findMovie()
+    if (prevState.short !== this.state.short) {
+      // this.setState((prev) => {
+      //   return { ...prev, errorMessage: { value: '', type: '' } }
+      // })
+      this.filterWithShort()
+      // this.findMovie()
     }
+  }
+
+  filterWithShort = () => {
+    const filterShort = this.state.filteredMovies.filter(
+      (movie) => movie.duration < 41
+    )
+    this.setState({ filteredMovies: filterShort })
   }
 
   findMovie = () => {
     const filter = filterMovies(
-      this.context.loadingMovies,
-      this.context.savedMovies,
-      this.props.movieValue,
-      this.props.shortMovie
+      this.props.loadingMovies,
+      this.props.savedMovies,
+      this.state.value,
+      this.state.short
     )
+
+    // console.log('FILTER', filter)
 
     if (filter.length < 1) {
       return this.setState((prev) => {
@@ -50,7 +56,6 @@ class Movies extends React.PureComponent {
           ...prev,
           filteredMovies: [],
           errorMessage: {
-            ...prev.errorMessage,
             value: 'Ничего не найдено :)',
             type: 'filter',
           },
@@ -67,19 +72,30 @@ class Movies extends React.PureComponent {
     })
   }
 
+  handleShortMovie = () => {
+    this.setState({ short: !this.state.short })
+  }
+
+  handleMovieValue = (value) => {
+    this.setState({ value: value })
+  }
+
+  clearMovies = () => {
+    this.setState({ filteredMovies: [] })
+  }
+
   render() {
-    // console.group('MOVIES')
-    // console.log('PROPS', this.props)
-    // console.log('STATE', this.state)
-    // console.log('CONTEXT', this.context)
-    // console.groupEnd()
+    console.group('MOVIES')
+    console.log('PROPS', this.props)
+    console.log('STATE', this.state)
+    console.groupEnd()
     return (
       <div className="movies">
         <SearchForm
-          clearError={this.props.clearError}
+          clearMovies={this.clearMovies}
           loading={this.props.loading}
-          handleShortMovie={this.props.handleShortMovie}
-          handleMovieValue={this.props.handleMovieValue}
+          handleShortMovie={this.handleShortMovie}
+          handleMovieValue={this.handleMovieValue}
         />
         <MoviesCardList
           deleteMovie={this.props.deleteMovie}

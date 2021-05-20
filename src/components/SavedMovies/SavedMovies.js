@@ -1,69 +1,50 @@
 import React from 'react'
-import CurrentMoviesContext from '../../contexts/CurrentMoviesContext'
 import MoviesCardList from '../MoviesCardList/MoviesCardList'
 import SearchForm from '../SearchForm/SearchForm'
 import { filterShortMovies } from '../../utils/utils'
+import { filterMovies } from '../../utils/utils'
 
 class SavedMovies extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      movies: [],
+      filteredMovies: [],
+      value: '',
+      short: '',
+      errorMessage: { value: '', type: '' },
     }
   }
-  static contextType = CurrentMoviesContext
 
   componentDidMount = () => {
-    this.filter()
+    localStorage.setItem('path', '/saved-movies')
   }
 
-  componentDidUpdate = (prevProps, prevState, prevContext) => {
-    console.log('prevProps', prevProps)
-    console.log('thisProps', this.props)
-    console.log('prevProps', prevState)
-    console.log('thisProps', this.state)
-    console.log('prevProps', prevContext)
-    console.log('thisProps', this.state)
-    console.log(this.context)
-    if (prevProps.shortMovie !== this.props.shortMovie) {
-      this.setState((prev) => {
-        return { ...prev, errorMessage: { value: '', type: '' } }
-      })
-      this.filter()
-    }
+  handleShortMovie = () => {
+    this.setState({ short: !this.state.short })
   }
 
-  filter = () => {
-    console.log('!!!!!!!!!!!!!!!!!', this.context.savedMovies)
-    const showFilms = filterShortMovies(
-      this.context.savedMovies,
-      this.context.shortMovie
-    )
-    this.setState((prev) => {
-      return { ...prev, movies: showFilms }
-    })
+  handleMovieValue = (value) => {
+    this.setState({ value: value })
   }
 
   render() {
     console.group('SAVED MOVIES')
     console.log('PROPS', this.props)
-    // console.log('STATE', this.state)
-    console.log('CONTEXT', this.context)
+    console.log('STATE', this.state)
     console.groupEnd()
     return (
       <div className="movies">
         <SearchForm
-          clearError={this.props.clearError}
           loading={this.props.loading}
-          handleShortMovie={this.props.handleShortMovie}
-          type={'saved'}
+          handleShortMovie={this.handleShortMovie}
+          handleMovieValue={this.handleMovieValue}
         />
-        <MoviesCardList
+        {/* <MoviesCardList
           deleteMovie={this.props.deleteMovie}
           errorMessage={this.props.errorMessage}
-          movies={this.state.movies}
+          movies={this.state.filteredMovies}
           path={this.props.path}
-        />
+        /> */}
       </div>
     )
   }

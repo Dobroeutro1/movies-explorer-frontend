@@ -16,6 +16,8 @@ class Profile extends React.PureComponent {
   static contextType = CurrentUserContext
 
   componentDidMount = () => {
+    localStorage.setItem('path', this.props.path)
+    console.log(localStorage)
     this.setState((prev) => {
       return {
         ...prev,

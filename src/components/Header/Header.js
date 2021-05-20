@@ -16,7 +16,7 @@ class Header extends React.PureComponent {
 
   render() {
     return this.props.loggedIn ? (
-      <div className={`header ${this.props.path ? 'header_black' : null}`}>
+      <div className={`header ${this.props.loggedIn ? 'header_black' : null}`}>
         <Link to="/" className="logo"></Link>
         <div className="header__buttons">
           <Link to="/movies" className="header_button header_button_film">

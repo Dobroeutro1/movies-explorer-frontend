@@ -37,6 +37,8 @@ class App extends React.PureComponent {
 
   componentDidMount = () => {
     const token = localStorage.getItem('token')
+    localStorage.setItem('path', this.props.location.pathname)
+
     if (token) {
       mainApi
         .checkToken(token)
@@ -49,7 +51,7 @@ class App extends React.PureComponent {
                 name: { value: res.name, valid: true },
               },
             })
-            this.props.history.push('/movies')
+            this.props.history.push(localStorage.path)
           }
         })
         .catch((err) =>
@@ -152,18 +154,6 @@ class App extends React.PureComponent {
           return { ...prev, errorMessage: { value: err, type: 'editProfile' } }
         })
       )
-  }
-
-  handleMovieValue = (value) => {
-    this.setState((prev) => {
-      return { ...prev, movies: { ...prev.movies, movieValue: value } }
-    })
-  }
-
-  handleShortMovie = (bool) => {
-    this.setState((prev) => {
-      return { ...prev, movies: { ...prev.movies, shortMovie: bool } }
-    })
   }
 
   // Получить все фильмы
@@ -319,74 +309,63 @@ class App extends React.PureComponent {
     return (
       <div className="app">
         <CurrentUserContext.Provider value={this.state.user}>
-          <CurrentMoviesContext.Provider value={this.state.movies}>
-            <Switch>
-              <Route exact path="/">
-                <Header loggedIn={this.state.loggedIn} />
-                <Main />
-                <Footer />
-              </Route>
+          <Switch>
+            <Route exact path="/">
+              <Header loggedIn={this.state.loggedIn} />
+              <Main />
+              <Footer />
+            </Route>
 
-              <ProtectedRoute
-                path="/movies"
-                header={true}
-                footer={true}
-                deleteMovie={this.deleteMovie}
-                addMovie={this.addMovie}
-                loggedIn={this.state.loggedIn}
-                loading={this.state.loading}
+            <ProtectedRoute
+              path="/movies"
+              deleteMovie={this.deleteMovie}
+              addMovie={this.addMovie}
+              loggedIn={this.state.loggedIn}
+              loading={this.state.loading}
+              errorMessage={this.state.errorMessage}
+              loadingMovies={this.state.movies.loadingMovies}
+              savedMovies={this.state.movies.savedMovies}
+              component={Movies}
+            ></ProtectedRoute>
+
+            <ProtectedRoute
+              path="/saved-movies"
+              deleteMovie={this.deleteMovie}
+              loggedIn={this.state.loggedIn}
+              loading={this.state.loading}
+              errorMessage={this.state.errorMessage}
+              savedMovies={this.state.savedMovies}
+              component={SavedMovies}
+            ></ProtectedRoute>
+
+            <ProtectedRoute
+              path="/profile"
+              footer={true}
+              loggedIn={this.state.loggedIn}
+              onSignOut={this.onSignOut}
+              getProfile={this.getProfile}
+              ready={this.state.readyEditProfile}
+              editProfile={this.editProfile}
+              component={Profile}
+            ></ProtectedRoute>
+
+            <Route path="/sign-up">
+              <Register
                 errorMessage={this.state.errorMessage}
-                handleShortMovie={this.handleShortMovie}
-                handleMovieValue={this.handleMovieValue}
-                clearError={this.clearError}
-                movieValue={this.state.movies.movieValue}
-                shortMovie={this.state.movies.shortMovie}
-                component={Movies}
-              ></ProtectedRoute>
-              <ProtectedRoute
-                path="/saved-movies"
-                header={true}
-                footer={true}
-                getMovie={this.getSavedMovies}
-                deleteMovie={this.deleteMovie}
-                loading={this.state.loading}
+                onRegister={this.onRegister}
+              />
+            </Route>
+            <Route path="/sign-in">
+              <Login
                 errorMessage={this.state.errorMessage}
-                handleShortMovie={this.handleShortMovie}
-                clearError={this.clearError}
-                loggedIn={this.state.loggedIn}
-                shortMovie={this.state.movies.shortMovie}
-                component={SavedMovies}
-              ></ProtectedRoute>
-              <ProtectedRoute
-                path="/profile"
-                header={true}
-                footer={false}
-                loggedIn={this.state.loggedIn}
-                onSignOut={this.onSignOut}
-                getProfile={this.getProfile}
-                ready={this.state.readyEditProfile}
-                editProfile={this.editProfile}
-                component={Profile}
-              ></ProtectedRoute>
+                onLogin={this.onLogin}
+              />
+            </Route>
 
-              <Route path="/sign-up">
-                <Register
-                  errorMessage={this.state.errorMessage}
-                  onRegister={this.onRegister}
-                />
-              </Route>
-              <Route path="/sign-in">
-                <Login
-                  errorMessage={this.state.errorMessage}
-                  onLogin={this.onLogin}
-                />
-              </Route>
-
-              <Route path="*">
-                <NotFound />
-              </Route>
-            </Switch>
-          </CurrentMoviesContext.Provider>
+            <Route path="*">
+              <NotFound />
+            </Route>
+          </Switch>
         </CurrentUserContext.Provider>
       </div>
     )

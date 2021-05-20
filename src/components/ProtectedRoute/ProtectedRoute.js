@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Redirect, withRouter } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import Header from '../Header/Header'
 import Footer from '../Footer/Footer'
 
@@ -9,16 +9,16 @@ const ProtectedRoute = ({ component: Component, ...props }) => {
       {() =>
         props.loggedIn ? (
           <>
-            {props.header ? <Header path={props.path} loggedIn={props.loggedIn} /> : null}
+            <Header loggedIn={props.loggedIn} />
             <Component {...props} />
-            {props.footer ? <Footer /> : null}
+            {props.footer ? null : <Footer />}
           </>
         ) : (
-          <Redirect to='/' />
+          <Redirect to="/" />
         )
       }
     </Route>
   )
 }
 
-export default withRouter(ProtectedRoute)
+export default ProtectedRoute
