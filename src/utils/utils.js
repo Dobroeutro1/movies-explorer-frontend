@@ -22,14 +22,6 @@ export function checkResponse(res) {
   return Promise.reject('Ошибка сервера')
 }
 
-export function filterShortMovies(data, short) {
-  if (short) {
-    return data.filter((el) => el.duration < 41)
-  }
-
-  return data
-}
-
 export function filterMovies(data, savedMovies, value, short) {
   let filterMovies = data.filter((movie) => {
     return movie.nameRU.includes(value)

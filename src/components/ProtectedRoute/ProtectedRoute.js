@@ -14,7 +14,7 @@ const ProtectedRoute = ({ component: Component, ...props }) => {
             {props.footer ? null : <Footer />}
           </>
         ) : (
-          <Redirect to="/" />
+          <Redirect to='/' />
         )
       }
     </Route>

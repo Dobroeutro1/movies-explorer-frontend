@@ -10,15 +10,11 @@ class AboutProject extends React.PureComponent {
         <div className='about__project_text_wrap'>
           <div className='about__project_text'>
             <h4 className='about__project_text_title'>Дипломный проект включал 5 этапов</h4>
-            <p className='about__project_text_subtitle'>
-              Составление плана, работу над бэкендом, вёрстку, добавление функциональности и финальные доработки.
-            </p>
+            <p className='about__project_text_subtitle'>Составление плана, работу над бэкендом, вёрстку, добавление функциональности и финальные доработки.</p>
           </div>
           <div className='about__project_text'>
             <h4 className='about__project_text_title'>На выполнение диплома ушло 5 недель</h4>
-            <p className='about__project_text_subtitle'>
-              У каждого этапа был мягкий и жёсткий дедлайн, которые нужно было соблюдать, чтобы успешно защититься.
-            </p>
+            <p className='about__project_text_subtitle'>У каждого этапа был мягкий и жёсткий дедлайн, которые нужно было соблюдать, чтобы успешно защититься.</p>
           </div>
         </div>
         <div className='about__project_info'>

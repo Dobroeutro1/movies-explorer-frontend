@@ -17,7 +17,6 @@ class Profile extends React.PureComponent {
 
   componentDidMount = () => {
     localStorage.setItem('path', this.props.path)
-    console.log(localStorage)
     this.setState((prev) => {
       return {
         ...prev,
@@ -30,9 +29,7 @@ class Profile extends React.PureComponent {
 
   handleReady = () => {
     return this.setState((prev) => {
-      const ready =
-        ValidationForm('email', this.state.email.value) &&
-        ValidationForm('name', this.state.name.value)
+      const ready = ValidationForm('email', this.state.email.value) && ValidationForm('name', this.state.name.value)
       return { ...prev, ready: ready }
     })
   }
@@ -42,10 +39,7 @@ class Profile extends React.PureComponent {
     const valid = ValidationForm(id, value)
 
     this.setState((prev) => {
-      if (
-        value === this.context.email.value ||
-        value === this.context.name.value
-      ) {
+      if (value === this.context.email.value || value === this.context.name.value) {
         return {
           ...prev,
           [id]: { ...prev[id], value: value, valid: valid },
@@ -70,68 +64,32 @@ class Profile extends React.PureComponent {
   }
 
   render() {
-    console.log('PROFILE PROPS', this.props)
-    console.log('PROFILE CONTEXT', this.context)
-    console.log('PROFILE STATE', this.state)
     return (
-      <div className="profile">
-        <span
-          className={`profile__span_edit ${
-            !this.state.message ? '' : 'opened'
-          }`}
-        >
-          Изменения успешно применены!
-        </span>
-        <h1 className="profile__title">Привет, {this.context.name.value}!</h1>
+      <div className='profile'>
+        <span className={`profile__span_edit ${!this.state.message ? '' : 'opened'}`}>Изменения успешно применены!</span>
+        <h1 className='profile__title'>Привет, {this.context.name.value}!</h1>
 
-        <form className="profile__info">
-          <div className="profile__info_element">
-            <div className="profile__info_group">
-              <p className="profile__info_text">Имя</p>
-              <input
-                onChange={this.onChange}
-                id="name"
-                value={this.state.name.value}
-                className="profile__info_text profile__info_input"
-              />
+        <form className='profile__info'>
+          <div className='profile__info_element'>
+            <div className='profile__info_group'>
+              <p className='profile__info_text'>Имя</p>
+              <input onChange={this.onChange} id='name' value={this.state.name.value} className='profile__info_text profile__info_input' />
             </div>
-            <span
-              className={`profile__span ${
-                this.state.name.valid ? '' : 'opened'
-              }`}
-            >
-              Что-то пошло не так...
-            </span>
+            <span className={`profile__span ${this.state.name.valid ? '' : 'opened'}`}>Что-то пошло не так...</span>
           </div>
-          <div className="profile__info_element">
-            <div className="profile__info_group">
-              <p className="profile__info_text">E-mail</p>
-              <input
-                onChange={this.onChange}
-                id="email"
-                value={this.state.email.value}
-                className="profile__info_text profile__info_input"
-              />
+          <div className='profile__info_element'>
+            <div className='profile__info_group'>
+              <p className='profile__info_text'>E-mail</p>
+              <input onChange={this.onChange} id='email' value={this.state.email.value} className='profile__info_text profile__info_input' />
             </div>
-            <span
-              className={`profile__span ${
-                this.state.email.valid ? '' : 'opened'
-              }`}
-            >
-              Что-то пошло не так...
-            </span>
+            <span className={`profile__span ${this.state.email.valid ? '' : 'opened'}`}>Что-то пошло не так...</span>
           </div>
-          <button
-            disabled={!this.state.ready}
-            type="submit"
-            onClick={this.editProfile}
-            className={`profile__btn ${this.state.ready ? '' : 'disabled'}`}
-          >
+          <button disabled={!this.state.ready} type='submit' onClick={this.editProfile} className={`profile__btn ${this.state.ready ? '' : 'disabled'}`}>
             Редактировать
           </button>
         </form>
 
-        <button onClick={this.props.onSignOut} className="profile__logout">
+        <button onClick={this.props.onSignOut} className='profile__logout'>
           Выйти из аккаунта
         </button>
       </div>

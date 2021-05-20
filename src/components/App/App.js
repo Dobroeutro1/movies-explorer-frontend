@@ -13,7 +13,6 @@ import NotFound from '../NotFound/NotFound'
 import moviesApi from '../../utils/MoviesApi'
 import mainApi from '../../utils/MainApi'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-import CurrentMoviesContext from '../../contexts/CurrentMoviesContext'
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -54,9 +53,7 @@ class App extends React.PureComponent {
             this.props.history.push(localStorage.path)
           }
         })
-        .catch((err) =>
-          this.setState({ errorMessage: { value: err, type: 'token' } })
-        )
+        .catch((err) => this.setState({ errorMessage: { value: err, type: 'token' } }))
 
       this.getMovies()
       this.getSavedMovies()
@@ -115,8 +112,6 @@ class App extends React.PureComponent {
     mainApi
       .getProfile()
       .then((res) => {
-        console.log('RES', res)
-        console.log('RES STATE', this.state.user)
         this.setState((prev) => {
           return {
             ...prev,
@@ -218,33 +213,9 @@ class App extends React.PureComponent {
   }
 
   // Добавить фильм
-  addMovie = (
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    thumbnail,
-    nameRU,
-    nameEN,
-    id
-  ) => {
+  addMovie = (country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN, id) => {
     mainApi
-      .addMovie(
-        country,
-        director,
-        duration,
-        year,
-        description,
-        image,
-        trailer,
-        thumbnail,
-        nameRU,
-        nameEN,
-        id
-      )
+      .addMovie(country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN, id)
       .then((res) => {
         this.setState((prev) => {
           return {
@@ -255,7 +226,6 @@ class App extends React.PureComponent {
             },
           }
         })
-        console.log('ADDMOVIE', res)
       })
       .catch((err) =>
         this.setState((prev) => {
@@ -270,9 +240,7 @@ class App extends React.PureComponent {
       .deleteMovie(id)
       .then((res) => {
         if (res) {
-          const filteredMovies = this.state.movies.savedMovies.filter(
-            (el) => el.id !== id
-          )
+          const filteredMovies = this.state.movies.savedMovies.filter((el) => el.id !== id)
 
           this.setState((prev) => {
             return {
@@ -301,23 +269,18 @@ class App extends React.PureComponent {
   }
 
   render() {
-    // console.group('APP')
-    // console.log('STATE', this.state.movies)
-    // console.log('PROPS', this.props)
-    // console.groupEnd()
-    // console.log('APP STATE', this.state)
     return (
-      <div className="app">
+      <div className='app'>
         <CurrentUserContext.Provider value={this.state.user}>
           <Switch>
-            <Route exact path="/">
+            <Route exact path='/'>
               <Header loggedIn={this.state.loggedIn} />
               <Main />
               <Footer />
             </Route>
 
             <ProtectedRoute
-              path="/movies"
+              path='/movies'
               deleteMovie={this.deleteMovie}
               addMovie={this.addMovie}
               loggedIn={this.state.loggedIn}
@@ -325,44 +288,35 @@ class App extends React.PureComponent {
               errorMessage={this.state.errorMessage}
               loadingMovies={this.state.movies.loadingMovies}
               savedMovies={this.state.movies.savedMovies}
-              component={Movies}
-            ></ProtectedRoute>
+              component={Movies}></ProtectedRoute>
 
             <ProtectedRoute
-              path="/saved-movies"
+              path='/saved-movies'
               deleteMovie={this.deleteMovie}
               loggedIn={this.state.loggedIn}
               loading={this.state.loading}
               errorMessage={this.state.errorMessage}
-              savedMovies={this.state.savedMovies}
-              component={SavedMovies}
-            ></ProtectedRoute>
+              savedMovies={this.state.movies.savedMovies}
+              component={SavedMovies}></ProtectedRoute>
 
             <ProtectedRoute
-              path="/profile"
+              path='/profile'
               footer={true}
               loggedIn={this.state.loggedIn}
               onSignOut={this.onSignOut}
               getProfile={this.getProfile}
               ready={this.state.readyEditProfile}
               editProfile={this.editProfile}
-              component={Profile}
-            ></ProtectedRoute>
+              component={Profile}></ProtectedRoute>
 
-            <Route path="/sign-up">
-              <Register
-                errorMessage={this.state.errorMessage}
-                onRegister={this.onRegister}
-              />
+            <Route path='/sign-up'>
+              <Register errorMessage={this.state.errorMessage} onRegister={this.onRegister} />
             </Route>
-            <Route path="/sign-in">
-              <Login
-                errorMessage={this.state.errorMessage}
-                onLogin={this.onLogin}
-              />
+            <Route path='/sign-in'>
+              <Login errorMessage={this.state.errorMessage} onLogin={this.onLogin} />
             </Route>
 
-            <Route path="*">
+            <Route path='*'>
               <NotFound />
             </Route>
           </Switch>

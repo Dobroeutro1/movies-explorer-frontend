@@ -82,20 +82,7 @@ class Api {
   }
 
   // Добавить фильм
-  addMovie = (
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    thumbnail,
-    nameRU,
-    nameEN,
-    id,
-    next
-  ) => {
+  addMovie = (country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN, id, next) => {
     return fetch(`${this.url}/movies`, {
       method: 'POST',
       headers: {

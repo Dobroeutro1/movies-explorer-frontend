@@ -16,39 +16,24 @@ class Movies extends React.PureComponent {
 
   componentDidMount() {
     localStorage.setItem('path', '/movies')
+    const localMovies = localStorage.getItem('movies')
+    if (localMovies) {
+      this.setState({ filteredMovies: JSON.parse(localMovies) })
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.value !== this.state.value) {
-      this.setState({ filteredMovies: [] }, this.findMovie)
-      // this.findMovie()
+      this.findMovie()
     }
 
-    if (prevState.short !== this.state.short) {
-      // this.setState((prev) => {
-      //   return { ...prev, errorMessage: { value: '', type: '' } }
-      // })
-      this.filterWithShort()
-      // this.findMovie()
+    if (prevState.short !== this.state.short && this.state.value) {
+      this.findMovie()
     }
-  }
-
-  filterWithShort = () => {
-    const filterShort = this.state.filteredMovies.filter(
-      (movie) => movie.duration < 41
-    )
-    this.setState({ filteredMovies: filterShort })
   }
 
   findMovie = () => {
-    const filter = filterMovies(
-      this.props.loadingMovies,
-      this.props.savedMovies,
-      this.state.value,
-      this.state.short
-    )
-
-    // console.log('FILTER', filter)
+    const filter = filterMovies(this.props.loadingMovies, this.props.savedMovies, this.state.value, this.state.short)
 
     if (filter.length < 1) {
       return this.setState((prev) => {
@@ -63,12 +48,11 @@ class Movies extends React.PureComponent {
       })
     }
 
-    return this.setState((prev) => {
-      return {
-        ...prev,
-        filteredMovies: filter,
-        errorMessage: { value: '', type: '' },
-      }
+    localStorage.setItem('movies', JSON.stringify(filter))
+
+    return this.setState({
+      filteredMovies: filter,
+      errorMessage: { value: '', type: '' },
     })
   }
 
@@ -80,23 +64,10 @@ class Movies extends React.PureComponent {
     this.setState({ value: value })
   }
 
-  clearMovies = () => {
-    this.setState({ filteredMovies: [] })
-  }
-
   render() {
-    console.group('MOVIES')
-    console.log('PROPS', this.props)
-    console.log('STATE', this.state)
-    console.groupEnd()
     return (
-      <div className="movies">
-        <SearchForm
-          clearMovies={this.clearMovies}
-          loading={this.props.loading}
-          handleShortMovie={this.handleShortMovie}
-          handleMovieValue={this.handleMovieValue}
-        />
+      <div className='movies'>
+        <SearchForm loading={this.props.loading} handleShortMovie={this.handleShortMovie} handleMovieValue={this.handleMovieValue} />
         <MoviesCardList
           deleteMovie={this.props.deleteMovie}
           addMovie={this.props.addMovie}
